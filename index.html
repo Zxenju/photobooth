@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analog Studio — Photobooth Experience</title>
+  
+  <!-- Google Fonts for Retro Aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="./ANALOGLOGO.png">
+  <style>
+    :root {
+      --bg-color: #f4efe6;
+      --card-bg: #e8ded1;
+      --accent-color: #8b4513;
+      --text-color: #2b2521;
+      --strip-bg: #fffdfa;
+      --font-heading: 'Playfair Display', serif;
+      --font-mono: 'Courier Prime', monospace;
+      --font-script: 'Caveat', cursive;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Grain Overlay */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      opacity: 0.05;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+      z-index: 999;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    header h1 {
+      font-family: var(--font-heading);
+      font-size: 2.8rem;
+      font-style: italic;
+      color: var(--text-color);
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #665a52;
+      letter-spacing: 1px;
+    }
+
+    .nav-btn {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    /* Views Switcher */
+    .view-section {
+      display: none;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .view-section.active-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* LANDING PAGE STYLES */
+    .landing-card {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .option-card {
+      background: #fdfbf7;
+      border: 2px solid #c8b9a6;
+      border-radius: 8px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-color);
+      background: #fff;
+    }
+
+    .option-card.selected {
+      border-color: var(--accent-color);
+      background: #f1e6d8;
+      box-shadow: 0 2px 8px rgba(139, 69, 19, 0.15);
+    }
+
+    .option-card .icon {
+      font-size: 1.6rem;
+    }
+
+    .option-card .label {
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .option-card .sublabel {
+      font-size: 0.68rem;
+      color: #7a6c5d;
+      font-weight: normal;
+    }
+
+    .btn-start-session {
+      background: var(--accent-color);
+      color: #fffdfa;
+      border: none;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(139, 69, 19, 0.25);
+      transition: background-color 0.2s, transform 0.1s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-start-session:hover {
+      background: #72370e;
+    }
+
+    /* BOOTH STUDIO STYLES */
+    .studio-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .booth-card {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .camera-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background-color: #1a1715;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 4px solid #fffdfa;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      transition: filter 0.3s ease;
+    }
+
+    .camera-error {
+      position: absolute;
+      color: #f4efe6;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.85rem;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Filter Classes */
+    .filter-sepia { filter: sepia(0.45) contrast(1.15) brightness(0.95); }
+    .filter-bw { filter: grayscale(1) contrast(1.2) brightness(0.9); }
+    .filter-vintage { filter: sepia(0.2) saturate(1.3) contrast(1.1) hue-rotate(-10deg); }
+    .filter-normal { filter: none; }
+    .filter-golden { filter: sepia(0.2) saturate(1.5) brightness(1.12) contrast(1.05) hue-rotate(-6deg); }
+    .filter-y2k { filter: saturate(1.5) contrast(1.3) brightness(1.05) hue-rotate(4deg); }
+    .filter-moody { filter: contrast(1.25) saturate(0.8) brightness(0.85) sepia(0.12) hue-rotate(-6deg); }
+    .filter-dreamy { filter: brightness(1.18) contrast(0.88) saturate(1.15) blur(0.4px); }
+    .filter-polaroid { filter: contrast(0.85) brightness(1.12) saturate(0.75) sepia(0.12); }
+    .filter-cool { filter: saturate(0.9) contrast(1.12) brightness(1.04) hue-rotate(-10deg); }
+
+    /* Flash Effect */
+    .flash {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: white; opacity: 0; pointer-events: none; z-index: 10;
+    }
+
+    .flash.active { animation: flash-animation 0.4s ease-out; }
+    @keyframes flash-animation { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+
+    /* Countdown Overlay */
+    .countdown-overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-heading);
+      font-size: 6rem;
+      color: #fffdfa;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+    }
+
+    /* Shot progress dots during a session */
+    .shot-progress {
+      position: absolute;
+      top: 12px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 6;
+    }
+
+    .shot-progress .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: background 0.25s;
+    }
+
+    .shot-progress .dot.done { background: #fffdfa; }
+    .shot-progress .dot.current { background: #e0a458; }
+
+    .controls {
+      width: 100%;
+      margin-top: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .filter-selector {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-filter {
+      background: transparent;
+      border: 1px solid #9e8e7c;
+      padding: 0.4rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-filter.active, .btn-filter:hover {
+      background: var(--accent-color);
+      color: #fff;
+      border-color: var(--accent-color);
+    }
+
+    .btn-capture {
+      background: var(--accent-color);
+      color: #fffdfa;
+      border: none;
+      padding: 0.9rem;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(139, 69, 19, 0.25);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn-capture:hover { background: #72370e; }
+    .btn-capture:active { transform: scale(0.98); }
+    .btn-capture:disabled { background: #b5a495; cursor: not-allowed; }
+
+    /* Preview & Customization Section */
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .photostrip-wrapper {
+      background: var(--strip-bg);
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      transform: rotate(-1deg);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .photostrip-wrapper:hover {
+      transform: rotate(0deg) scale(1.01);
+    }
+
+    canvas {
+      display: block;
+      max-width: 260px;
+      height: auto;
+      cursor: crosshair;
+    }
+
+    /* Customization Panel */
+    .custom-panel {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .custom-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: opacity 0.2s;
+    }
+
+    .custom-group.disabled-group {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .custom-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      text-transform: uppercase;
+    }
+
+    .custom-group .hint {
+      font-size: 0.68rem;
+      color: #7a6c5d;
+      font-weight: normal;
+      text-transform: none;
+    }
+
+    .theme-swatches {
+      display: flex;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .swatch:hover { transform: scale(1.15); }
+
+    .sticker-palette {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-sticker {
+      background: #fdfbf7;
+      border: 1px solid #c8b9a6;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sticker.selected, .btn-sticker:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .sticker-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-mini {
+      background: transparent;
+      border: 1px solid #9e8e7c;
+      padding: 0.2rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-mini:hover { background: #d0c2b0; }
+
+    .export-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .btn-action {
+      background: #2b2521;
+      color: #f4efe6;
+      border: none;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover { background: #453c36; }
+    .btn-action.secondary { background: #8b4513; }
+    .btn-action.secondary:hover { background: #72370e; }
+
+    /* Live Photo Container Modal */
+    .live-photo-preview {
+      width: 100%;
+      max-width: 260px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: none;
+      border: 2px solid #8b4513;
+    }
+
+    .live-photo-preview video {
+      width: 100%;
+      height: auto;
+      transform: none;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      .photostrip-wrapper, .photostrip-wrapper * {
+        visibility: visible;
+      }
+      .photostrip-wrapper {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%) rotate(0deg) !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain-overlay"></div>
+
+  <header>
+    <button id="backNavBtn" class="nav-btn" onclick="goBackToSetup()" style="display: none;">
+      ← Setup Layout
+    </button>
+    <h1>Analog Studio</h1>
+    <p>— AUTOMATIC PHOTOBOOTH —</p>
+  </header>
+
+  <!-- ==================== LANDING / SETUP VIEW ==================== -->
+  <div id="landingView" class="view-section active-view">
+    <div class="landing-card">
+      <div>
+        <div class="section-title">1. Select Strip Layout</div>
+        <div class="options-grid">
+          <div class="option-card selected" onclick="selectLayout('3-vertical', this)">
+            <span class="icon">🎞️</span>
+            <span class="label">1x3 Vertical</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('2x2-grid', this)">
+            <span class="icon">🖼️</span>
+            <span class="label">2x2 Grid</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('4-vertical', this)">
+            <span class="icon">📜</span>
+            <span class="label">1x4 Tall</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('single', this)">
+            <span class="icon">📷</span>
+            <span class="label">Single Shot</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">2. Design Template</div>
+        <div class="options-grid">
+          <div class="option-card selected" onclick="selectTemplate('classic', this)">
+            <span class="icon">🎞️</span>
+            <span class="label">Classic</span>
+            <span class="sublabel">Analog Studio</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('cinema', this)">
+            <span class="icon">🎬</span>
+            <span class="label">Cinema</span>
+            <span class="sublabel">Ticket &amp; popcorn</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('cute', this)">
+            <span class="icon">🌸</span>
+            <span class="label">Super Cute</span>
+            <span class="sublabel">Pastel stickers</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('lockscreen', this)">
+            <span class="icon">🌙</span>
+            <span class="label">Lock Screen</span>
+            <span class="sublabel">Now playing</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">3. Default Filter</div>
+        <div class="options-grid">
+          <div class="option-card selected" onclick="selectFilterPreset('filter-sepia', this)">
+            <span class="icon">☕</span>
+            <span class="label">Warm Sepia</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-vintage', this)">
+            <span class="icon">🌅</span>
+            <span class="label">Vintage</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-bw', this)">
+            <span class="icon">🖤</span>
+            <span class="label">B & W</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-normal', this)">
+            <span class="icon">🌿</span>
+            <span class="label">Natural</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-golden', this)">
+            <span class="icon">🌇</span>
+            <span class="label">Golden Hour</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-y2k', this)">
+            <span class="icon">💿</span>
+            <span class="label">Y2K</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-moody', this)">
+            <span class="icon">🌆</span>
+            <span class="label">Moody</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-dreamy', this)">
+            <span class="icon">🌸</span>
+            <span class="label">Dreamy Glow</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-polaroid', this)">
+            <span class="icon">🖼️</span>
+            <span class="label">Polaroid Fade</span>
+          </div>
+          <div class="option-card" onclick="selectFilterPreset('filter-cool', this)">
+            <span class="icon">🧊</span>
+            <span class="label">Cool Tone</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">4. Countdown Timer</div>
+        <div class="options-grid">
+          <div class="option-card" onclick="selectTimer(3, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">3 Seconds</span>
+          </div>
+          <div class="option-card selected" onclick="selectTimer(5, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">5 Seconds</span>
+          </div>
+          <div class="option-card" onclick="selectTimer(10, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">10 Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-start-session" onclick="enterStudio()">ENTER PHOTOBOOTH STUDIO →</button>
+    </div>
+  </div>
+
+  <!-- ==================== PHOTOBOOTH STUDIO VIEW ==================== -->
+  <div id="studioView" class="view-section">
+    <div class="studio-container">
+      
+      <!-- Camera Section -->
+      <div class="booth-card">
+        <div class="camera-container">
+          <video id="webcam" autoplay playsinline muted class="filter-sepia"></video>
+          <div id="cameraError" class="camera-error">
+            ⚠️ Camera access blocked or unavailable.<br>
+            Please allow camera permissions or serve this page over HTTPS.
+          </div>
+          <div id="shotProgress" class="shot-progress"></div>
+          <div id="flash" class="flash"></div>
+          <div id="countdown" class="countdown-overlay">3</div>
+        </div>
+
+        <div class="controls">
+          <div class="filter-selector">
+            <button class="btn-filter" id="btn-sepia" onclick="setFilter('filter-sepia', this)">Warm Sepia</button>
+            <button class="btn-filter" id="btn-vintage" onclick="setFilter('filter-vintage', this)">Vintage</button>
+            <button class="btn-filter" id="btn-bw" onclick="setFilter('filter-bw', this)">B&W</button>
+            <button class="btn-filter" id="btn-normal" onclick="setFilter('filter-normal', this)">Natural</button>
+            <button class="btn-filter" id="btn-golden" onclick="setFilter('filter-golden', this)">Golden Hour</button>
+            <button class="btn-filter" id="btn-y2k" onclick="setFilter('filter-y2k', this)">Y2K</button>
+            <button class="btn-filter" id="btn-moody" onclick="setFilter('filter-moody', this)">Moody</button>
+            <button class="btn-filter" id="btn-dreamy" onclick="setFilter('filter-dreamy', this)">Dreamy</button>
+            <button class="btn-filter" id="btn-polaroid" onclick="setFilter('filter-polaroid', this)">Polaroid</button>
+            <button class="btn-filter" id="btn-cool" onclick="setFilter('filter-cool', this)">Cool Tone</button>
+          </div>
+
+          <button id="startBtn" class="btn-capture" onclick="startPhotoboothSession()">TAKE PHOTO STRIP</button>
+        </div>
+      </div>
+
+      <!-- Photostrip Preview & Customization Actions -->
+      <div class="preview-card">
+        <div class="photostrip-wrapper">
+          <canvas id="stripCanvas" width="400" height="1100" onclick="handleCanvasClick(event)"></canvas>
+        </div>
+
+        <!-- Design Customization Panel -->
+        <div id="customPanel" class="custom-panel" style="display: none;">
+          <div id="swatchGroup" class="custom-group">
+            <label>1. Frame Theme Color <span class="hint" id="swatchHint"></span></label>
+            <div class="theme-swatches">
+              <div class="swatch" style="background: #FFFDF2;" onclick="setTheme('#FFFDF2')" title="Warm White"></div>
+              <div class="swatch" style="background: #1A1817;" onclick="setTheme('#1A1817')" title="Midnight Black"></div>
+              <div class="swatch" style="background: #F4E2DE;" onclick="setTheme('#F4E2DE')" title="Pastel Pink"></div>
+              <div class="swatch" style="background: #D5E0D8;" onclick="setTheme('#D5E0D8')" title="Matcha Green"></div>
+              <div class="swatch" style="background: #D3E0E8;" onclick="setTheme('#D3E0E8')" title="Retro Teal"></div>
+              <div class="swatch" style="background: #E8D9F0;" onclick="setTheme('#E8D9F0')" title="Lavender"></div>
+              <div class="swatch" style="background: #F0DCC8;" onclick="setTheme('#F0DCC8')" title="Terracotta"></div>
+              <div class="swatch" style="background: #FBE8EE;" onclick="setTheme('#FBE8EE')" title="Blush"></div>
+              <div class="swatch" style="background: #1E2A3A;" onclick="setTheme('#1E2A3A')" title="Midnight Navy"></div>
+              <div class="swatch" style="background: #FFF6DC;" onclick="setTheme('#FFF6DC')" title="Buttercream"></div>
+            </div>
+          </div>
+
+          <div class="custom-group">
+            <label>2. Stamp Emojis (Click Canvas to Place)</label>
+            <div class="sticker-palette">
+              <button class="btn-sticker" onclick="selectSticker('⭐', this)">⭐</button>
+              <button class="btn-sticker" onclick="selectSticker('🖤', this)">🖤</button>
+              <button class="btn-sticker" onclick="selectSticker('☕', this)">☕</button>
+              <button class="btn-sticker" onclick="selectSticker('🎞️', this)">🎞️</button>
+              <button class="btn-sticker" onclick="selectSticker('🌸', this)">🌸</button>
+              <button class="btn-sticker" onclick="selectSticker('⚡', this)">⚡</button>
+              <button class="btn-sticker" onclick="selectSticker('🍒', this)">🍒</button>
+              <button class="btn-sticker" onclick="selectSticker('📸', this)">📸</button>
+              <button class="btn-sticker" onclick="selectSticker('💫', this)">💫</button>
+            </div>
+            <div class="sticker-actions">
+              <button class="btn-mini" onclick="undoSticker()">↩ Undo Stamp</button>
+              <button class="btn-mini" onclick="randomizeStickers()">🎲 Surprise Me</button>
+              <button class="btn-mini" onclick="clearStickers()">🗑️ Clear All</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Photo Loop Player -->
+        <div id="livePhotoContainer" class="live-photo-preview">
+          <video id="liveVideo" autoplay loop muted playsinline></video>
+        </div>
+
+        <div class="export-buttons">
+          <button id="downloadBtn" class="btn-action" style="display:none;" onclick="downloadStrip()">
+            💾 Download Image
+          </button>
+          <button id="gifBtn" class="btn-action secondary" style="display:none;" onclick="downloadGif()">
+            🎬 Download Animated GIF
+          </button>
+          <button id="liveBtn" class="btn-action secondary" style="display:none;" onclick="downloadLivePhoto()">
+            📹 Download Live Photo
+          </button>
+          <button id="printBtn" class="btn-action" style="display:none;" onclick="printStrip()">
+            🖨️ Print Photostrip
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State Configuration
+    let selectedLayout = '3-vertical';
+    let currentFilter = 'filter-sepia';
+    let currentTheme = '#FFFDF2';
+    let currentTemplate = 'classic';
+    let countdownDuration = 5;
+    let activeSticker = null;
+    let placedStickers = []; // Array of { emoji, x, y }
+
+    // Session control — lets us safely cancel an in-progress photoshoot
+    // when the user navigates back to setup mid-session. This is the
+    // core fix for the "not resetting properly" bug: previously the
+    // capture loop had no way to know it should stop, so it kept
+    // running (still pushing frames, still recording) even after the
+    // user left the studio.
+    let sessionToken = 0;
+    let sessionActive = false;
+    
+    // Elements
+    const video = document.getElementById('webcam');
+    const cameraErrorEl = document.getElementById('cameraError');
+    const countdownEl = document.getElementById('countdown');
+    const flashEl = document.getElementById('flash');
+    const startBtn = document.getElementById('startBtn');
+    const canvas = document.getElementById('stripCanvas');
+    const ctx = canvas.getContext('2d');
+    const customPanel = document.getElementById('customPanel');
+    const shotProgressEl = document.getElementById('shotProgress');
+    const swatchGroup = document.getElementById('swatchGroup');
+    const swatchHint = document.getElementById('swatchHint');
+    
+    const downloadBtn = document.getElementById('downloadBtn');
+    const gifBtn = document.getElementById('gifBtn');
+    const liveBtn = document.getElementById('liveBtn');
+    const printBtn = document.getElementById('printBtn');
+    
+    const liveVideo = document.getElementById('liveVideo');
+    const livePhotoContainer = document.getElementById('livePhotoContainer');
+
+    const capturedImages = [];
+    const burstFrames = []; // For GIF creation
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let livePhotoBlob = null;
+
+    /* ============================================================
+       TEMPLATES
+       Each template controls the background, border decoration,
+       corner stickers and footer of the photostrip. Photo cell
+       positions are computed generically in drawLayoutGrid() using
+       each template's padding/gap/header numbers, so every template
+       works with every strip layout.
+       ============================================================ */
+    const TEMPLATES = {
+      classic: {
+        headerHeight: 0,
+        footerHeight: 90,
+        pad: 25,
+        gap: 18,
+        cellBg(theme) { return isDarkColor(theme) ? shadeColor(theme, 12) : '#EFEAE1'; },
+        drawBackground(c, w, h) {
+          c.fillStyle = currentTheme;
+          c.fillRect(0, 0, w, h);
+        },
+        drawDecor() { /* none — user stickers only */ },
+        drawFooter(c, w, h, dateStr, timeStr) {
+          const dark = isDarkColor(currentTheme);
+          c.fillStyle = dark ? '#FFFDF2' : '#8B4513';
+          c.font = 'bold 22px "Courier Prime", monospace';
+          c.textAlign = 'center';
+          c.fillText('ANALOG STUDIO', w / 2, h - 65);
+          c.fillStyle = dark ? '#A09080' : '#A08E7D';
+          c.font = '14px "Courier Prime", monospace';
+          c.fillText(`${dateStr}  ${timeStr}`, w / 2, h - 40);
+        }
+      },
+      cinema: {
+        headerHeight: 0,
+        footerHeight: 130,
+        pad: 34,
+        gap: 20,
+        cellBg() { return '#231313'; },
+        drawBackground(c, w, h) {
+          // Cream / dusty-pink vertical stripes
+          const stripeW = 22;
+          for (let x = 0, i = 0; x < w; x += stripeW, i++) {
+            c.fillStyle = i % 2 === 0 ? '#F6E4DE' : '#FBEDE8';
+            c.fillRect(x, 0, stripeW, h);
+          }
+          // Scalloped red ticket border
+          c.fillStyle = '#B5342A';
+          const borderW = 16;
+          c.fillRect(0, 0, w, borderW);
+          c.fillRect(0, h - borderW, w, borderW);
+          c.fillRect(0, 0, borderW, h);
+          c.fillRect(w - borderW, 0, borderW, h);
+          c.fillStyle = '#F6E4DE';
+          const scallop = 14;
+          for (let x = borderW / 2; x < w; x += scallop) {
+            c.beginPath(); c.arc(x, 0, 6, 0, Math.PI * 2); c.fill();
+            c.beginPath(); c.arc(x, h, 6, 0, Math.PI * 2); c.fill();
+          }
+          for (let y = borderW / 2; y < h; y += scallop) {
+            c.beginPath(); c.arc(0, y, 6, 0, Math.PI * 2); c.fill();
+            c.beginPath(); c.arc(w, y, 6, 0, Math.PI * 2); c.fill();
+          }
+        },
+        drawDecor(c, w, h) {
+          c.textAlign = 'center';
+          c.font = '30px serif';
+          c.fillText('🎬', w - 34, 56);
+          c.fillText('🍿', 34, 56);
+          c.fillText('🎟️', 34, h - 150);
+          c.fillText('🎞️', w - 34, h - 150);
+        },
+        drawFooter(c, w, h) {
+          const barH = 96;
+          const barY = h - barH;
+          c.fillStyle = '#B5342A';
+          c.fillRect(0, barY, w, barH);
+          c.fillStyle = '#FBEDE8';
+          c.font = 'italic bold 30px "Playfair Display", serif';
+          c.textAlign = 'center';
+          c.fillText('CINEMA', w / 2, barY + 44);
+          c.font = '13px "Courier Prime", monospace';
+          c.fillText("★ ADMIT ONE — TONIGHT'S FEATURE ★", w / 2, barY + 70);
+        }
+      },
+      cute: {
+        headerHeight: 0,
+        footerHeight: 130,
+        pad: 30,
+        gap: 22,
+        cellBg() { return '#FFFFFF'; },
+        drawBackground(c, w, h) {
+          c.fillStyle = '#DDEBFB';
+          c.fillRect(0, 0, w, h);
+          // Dashed scalloped double border
+          c.strokeStyle = '#FFFFFF';
+          c.lineWidth = 10;
+          c.setLineDash([2, 10]);
+          c.lineCap = 'round';
+          c.strokeRect(14, 14, w - 28, h - 28);
+          c.setLineDash([]);
+        },
+        drawDecor(c, w, h) {
+          c.textAlign = 'center';
+          c.font = '26px serif';
+          const spots = [
+            ['🧸', 40, 44], ['💌', w - 40, 70], ['🍓', 34, h - 190],
+            ['🐰', w - 36, h - 220], ['❤️', 40, h - 100], ['✨', w - 34, 40]
+          ];
+          spots.forEach(([emoji, x, y]) => c.fillText(emoji, x, y));
+        },
+        drawFooter(c, w, h) {
+          c.textAlign = 'center';
+          c.fillStyle = '#4E6E96';
+          c.font = 'bold 42px "Caveat", cursive';
+          c.fillText('SUPER CUTE', w / 2, h - 70);
+          c.font = '16px "Caveat", cursive';
+          c.fillStyle = '#7C93B3';
+          c.fillText('@analogstudio', w / 2, h - 42);
+          c.font = '20px serif';
+          c.fillText('🌸  ⭐  🌸', w / 2, h - 18);
+        }
+      },
+      lockscreen: {
+        headerHeight: 150,
+        footerHeight: 110,
+        pad: 0,
+        gap: 0,
+        cellBg() { return '#D8D8D8'; },
+        drawBackground(c, w, h) {
+          const grad = c.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, '#F2F2F2');
+          grad.addColorStop(1, '#E6E6E6');
+          c.fillStyle = grad;
+          c.fillRect(0, 0, w, h);
+        },
+        drawDecor() { /* clean, no decoration */ },
+        drawHeader(c, w, dateStr, timeStr) {
+          c.textAlign = 'center';
+          c.fillStyle = '#1A1A1A';
+          c.font = '20px "Courier Prime", monospace';
+          c.fillText(dateStr, w / 2, 46);
+          c.font = 'bold 54px "Courier Prime", monospace';
+          c.fillText(timeStr, w / 2, 104);
+        },
+        drawFooter(c, w, h) {
+          const barY = h - 110;
+          c.textAlign = 'center';
+          c.fillStyle = '#8A8A8A';
+          c.font = '13px "Courier Prime", monospace';
+          c.fillText('Now playing', w / 2, barY + 22);
+
+          // progress line
+          const lineY = barY + 46;
+          c.strokeStyle = '#C9C9C9';
+          c.lineWidth = 3;
+          c.beginPath(); c.moveTo(40, lineY); c.lineTo(w - 40, lineY); c.stroke();
+          c.strokeStyle = '#1A1A1A';
+          c.beginPath(); c.moveTo(40, lineY); c.lineTo(w / 2, lineY); c.stroke();
+          c.fillStyle = '#1A1A1A';
+          c.beginPath(); c.arc(w / 2, lineY, 5, 0, Math.PI * 2); c.fill();
+
+          // controls: prev, play/pause, next
+          const cy = barY + 82;
+          c.fillStyle = '#1A1A1A';
+          // prev triangle
+          c.beginPath();
+          c.moveTo(w / 2 - 46, cy - 10); c.lineTo(w / 2 - 46, cy + 10); c.lineTo(w / 2 - 60, cy); c.fill();
+          // next triangle
+          c.beginPath();
+          c.moveTo(w / 2 + 46, cy - 10); c.lineTo(w / 2 + 46, cy + 10); c.lineTo(w / 2 + 60, cy); c.fill();
+          // play/pause circle with bars
+          c.beginPath(); c.arc(w / 2, cy, 20, 0, Math.PI * 2); c.fill();
+          c.fillStyle = '#F2F2F2';
+          c.fillRect(w / 2 - 7, cy - 8, 4, 16);
+          c.fillRect(w / 2 + 3, cy - 8, 4, 16);
+        }
+      }
+    };
+
+    function templateUsesSwatches() {
+      return currentTemplate === 'classic';
+    }
+
+    // Works out if a hex color is "dark" so Classic can pick readable
+    // text/cell colors no matter which of the swatch colors is active.
+    function isDarkColor(hex) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance < 0.5;
+    }
+
+    function shadeColor(hex, percent) {
+      const r = Math.min(255, parseInt(hex.slice(1, 3), 16) + percent * 2.55);
+      const g = Math.min(255, parseInt(hex.slice(3, 5), 16) + percent * 2.55);
+      const b = Math.min(255, parseInt(hex.slice(5, 7), 16) + percent * 2.55);
+      return `rgb(${r | 0}, ${g | 0}, ${b | 0})`;
+    }
+
+    // View Navigation
+    function showView(viewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+      document.getElementById(viewId).classList.add('active-view');
+
+      const backNavBtn = document.getElementById('backNavBtn');
+      backNavBtn.style.display = (viewId === 'studioView') ? 'flex' : 'none';
+    }
+
+    // Called by the "← Setup Layout" button. This fully tears down the
+    // studio (camera, in-progress countdown/recording, captured shots,
+    // stickers, export buttons) so the next visit to the studio always
+    // starts from a clean slate — this is the reset fix.
+    function goBackToSetup() {
+      cancelActiveSession();
+      stopCamera();
+      resetStudioState();
+      showView('landingView');
+    }
+
+    function cancelActiveSession() {
+      // Bumping the token invalidates any in-flight startPhotoboothSession loop,
+      // so awaited steps (countdown, capture delays) exit instead of continuing
+      // to run against a stopped camera in the background.
+      sessionToken++;
+      sessionActive = false;
+      stopLiveRecording();
+      countdownEl.style.display = 'none';
+      flashEl.classList.remove('active');
+    }
+
+    function resetStudioState() {
+      capturedImages.length = 0;
+      burstFrames.length = 0;
+      placedStickers = [];
+      activeSticker = null;
+      recordedChunks = [];
+      livePhotoBlob = null;
+      liveVideo.pause();
+      liveVideo.removeAttribute('src');
+      liveVideo.load();
+      livePhotoContainer.style.display = 'none';
+      shotProgressEl.innerHTML = '';
+      startBtn.disabled = false;
+      hideExportButtons();
+      document.querySelectorAll('.btn-sticker').forEach(b => b.classList.remove('selected'));
+      renderBlankStrip();
+    }
+
+    // Landing Page Setup Selectors
+    function selectLayout(layout, element) {
+      selectedLayout = layout;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectTemplate(templateId, element) {
+      currentTemplate = templateId;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectFilterPreset(filterClass, element) {
+      currentFilter = filterClass;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectTimer(seconds, element) {
+      countdownDuration = seconds;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function enterStudio() {
+      // Always start from a guaranteed-clean state, even if the user
+      // bounced between setup and studio several times already.
+      cancelActiveSession();
+      resetStudioState();
+
+      // Sync studio filter button states
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      const activeFilterBtn = document.querySelector(`.btn-filter[onclick*="${currentFilter}"]`);
+      if (activeFilterBtn) activeFilterBtn.classList.add('active');
+
+      // Update button text with number of shots
+      const shotCount = getShotCount();
+      startBtn.textContent = `TAKE PHOTO STRIP (${shotCount} SHOT${shotCount > 1 ? 'S' : ''})`;
+
+      updateSwatchAvailability();
+      showView('studioView');
+      initCamera();
+      renderBlankStrip();
+    }
+
+    function updateSwatchAvailability() {
+      if (templateUsesSwatches()) {
+        swatchGroup.classList.remove('disabled-group');
+        swatchHint.textContent = '';
+      } else {
+        swatchGroup.classList.add('disabled-group');
+        swatchHint.textContent = '(built into template)';
+      }
+    }
+
+    function getShotCount() {
+      switch (selectedLayout) {
+        case 'single': return 1;
+        case '2x2-grid': return 4;
+        case '4-vertical': return 4;
+        case '3-vertical': default: return 3;
+      }
+    }
+
+    // Camera Lifecycle
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: "user" }, 
+          audio: false 
+        });
+        video.srcObject = stream;
+        video.className = currentFilter;
+        await video.play();
+        cameraErrorEl.style.display = 'none';
+        startBtn.disabled = false;
+      } catch (err) {
+        console.error("Camera access error:", err);
+        cameraErrorEl.style.display = 'block';
+        startBtn.disabled = true;
+      }
+    }
+
+    function stopCamera() {
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+    }
+
+    function setFilter(filterClass, btn) {
+      currentFilter = filterClass;
+      video.className = filterClass;
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Capture & Photobooth Logic
+    async function startPhotoboothSession() {
+      cancelActiveSession();
+      const myToken = ++sessionToken;
+      sessionActive = true;
+
+      startBtn.disabled = true;
+      hideExportButtons();
+      capturedImages.length = 0;
+      burstFrames.length = 0;
+      placedStickers.length = 0;
+      recordedChunks = [];
+      livePhotoBlob = null;
+
+      renderBlankStrip();
+      const shots = getShotCount();
+      setupShotProgress(shots);
+
+      // Start Recording Live Video Stream during photoshoot
+      startLiveRecording();
+
+      for (let i = 0; i < shots; i++) {
+        if (myToken !== sessionToken) return; // session was cancelled — bail out immediately
+        updateShotProgress(i);
+        await runCountdown(countdownDuration, myToken);
+        if (myToken !== sessionToken) return;
+        triggerFlash();
+        await capturePhotoWithBurst(myToken);
+        if (myToken !== sessionToken) return;
+        renderStrip();
+        if (i < shots - 1) await new Promise(res => setTimeout(res, 800));
+        if (myToken !== sessionToken) return;
+      }
+
+      if (myToken !== sessionToken) return;
+      updateShotProgress(shots);
+      stopLiveRecording();
+      startBtn.disabled = false;
+      sessionActive = false;
+      showExportButtons();
+    }
+
+    function setupShotProgress(shots) {
+      shotProgressEl.innerHTML = '';
+      for (let i = 0; i < shots; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        shotProgressEl.appendChild(dot);
+      }
+    }
+
+    function updateShotProgress(currentIndex) {
+      const dots = shotProgressEl.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.remove('current', 'done');
+        if (idx < currentIndex) dot.classList.add('done');
+        else if (idx === currentIndex) dot.classList.add('current');
+      });
+    }
+
+    function runCountdown(seconds, myToken) {
+      return new Promise((resolve) => {
+        countdownEl.style.display = 'block';
+        let count = seconds;
+        countdownEl.textContent = count;
+
+        const timer = setInterval(() => {
+          if (myToken !== sessionToken) {
+            clearInterval(timer);
+            countdownEl.style.display = 'none';
+            resolve();
+            return;
+          }
+          count--;
+          if (count > 0) {
+            countdownEl.textContent = count;
+          } else {
+            clearInterval(timer);
+            countdownEl.style.display = 'none';
+            resolve();
+          }
+        }, 1000);
+      });
+    }
+
+    function triggerFlash() {
+      flashEl.classList.add('active');
+      setTimeout(() => flashEl.classList.remove('active'), 400);
+    }
+
+    async function capturePhotoWithBurst(myToken) {
+      // Capture standard high-res photo
+      const photoCanvas = createFilteredFrameCanvas();
+      capturedImages.push(photoCanvas);
+
+      // Rapid burst capture (3 mini frames) for GIF animation
+      for (let k = 0; k < 3; k++) {
+        if (myToken !== sessionToken) return;
+        burstFrames.push(createFilteredFrameCanvas());
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+
+    // Kept in sync with the .filter-* CSS classes above, so whatever the
+    // live preview shows is exactly what gets baked into the captured frame.
+    const FILTER_CSS_MAP = {
+      'filter-sepia': 'sepia(0.45) contrast(1.15) brightness(0.95)',
+      'filter-bw': 'grayscale(1) contrast(1.2) brightness(0.9)',
+      'filter-vintage': 'sepia(0.2) saturate(1.3) contrast(1.1) hue-rotate(-10deg)',
+      'filter-normal': 'none',
+      'filter-golden': 'sepia(0.2) saturate(1.5) brightness(1.12) contrast(1.05) hue-rotate(-6deg)',
+      'filter-y2k': 'saturate(1.5) contrast(1.3) brightness(1.05) hue-rotate(4deg)',
+      'filter-moody': 'contrast(1.25) saturate(0.8) brightness(0.85) sepia(0.12) hue-rotate(-6deg)',
+      'filter-dreamy': 'brightness(1.18) contrast(0.88) saturate(1.15) blur(0.4px)',
+      'filter-polaroid': 'contrast(0.85) brightness(1.12) saturate(0.75) sepia(0.12)',
+      'filter-cool': 'saturate(0.9) contrast(1.12) brightness(1.04) hue-rotate(-10deg)'
+    };
+
+    function createFilteredFrameCanvas() {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 720;
+      tempCanvas.height = 540;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      // Mirror horizontally
+      tempCtx.translate(tempCanvas.width, 0);
+      tempCtx.scale(-1, 1);
+
+      // Apply Filter Simulation
+      tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+
+      tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+      return tempCanvas;
+    }
+
+    // Dynamic Canvas Renderer based on Selected Layout & Design Options
+    function renderBlankStrip() {
+      setupCanvasDimensions();
+      const tpl = TEMPLATES[currentTemplate];
+      tpl.drawBackground(ctx, canvas.width, canvas.height);
+      drawLayoutGrid(false, tpl);
+      drawHeader(tpl);
+      tpl.drawDecor(ctx, canvas.width, canvas.height);
+      drawFooter(tpl);
+      drawStickers();
+    }
+
+    function renderStrip() {
+      setupCanvasDimensions();
+      const tpl = TEMPLATES[currentTemplate];
+      tpl.drawBackground(ctx, canvas.width, canvas.height);
+      drawLayoutGrid(true, tpl);
+      drawHeader(tpl);
+      tpl.drawDecor(ctx, canvas.width, canvas.height);
+      drawFooter(tpl);
+      drawStickers();
+    }
+
+    function setupCanvasDimensions() {
+      const tpl = TEMPLATES[currentTemplate];
+      const extra = tpl.headerHeight + tpl.footerHeight;
+      if (selectedLayout === '2x2-grid') {
+        canvas.width = 600;
+        canvas.height = 600 + extra;
+      } else if (selectedLayout === 'single') {
+        canvas.width = 500;
+        canvas.height = 350 + extra;
+      } else if (selectedLayout === '4-vertical') {
+        canvas.width = 400;
+        canvas.height = 1260 + extra;
+      } else { // 3-vertical
+        canvas.width = 400;
+        canvas.height = 1010 + extra;
+      }
+    }
+
+    function drawHeader(tpl) {
+      if (tpl.headerHeight > 0 && tpl.drawHeader) {
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric'
+        });
+        const timeStr = today.toLocaleTimeString('en-US', {
+          hour: '2-digit', minute: '2-digit', hour12: false
+        });
+        tpl.drawHeader(ctx, canvas.width, dateStr, timeStr);
+      }
+    }
+
+    function drawLayoutGrid(drawCaptured, tpl) {
+      const padding = tpl.pad;
+      const gap = tpl.gap;
+      const top = tpl.headerHeight + padding;
+      const usableHeight = canvas.height - tpl.headerHeight - tpl.footerHeight - padding * 2;
+      const cellBg = tpl.cellBg(currentTheme);
+
+      if (selectedLayout === '2x2-grid') {
+        const photoWidth = (canvas.width - (padding * 3)) / 2;
+        const photoHeight = (usableHeight - gap) / 2;
+        for (let i = 0; i < 4; i++) {
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          const x = padding + col * (photoWidth + padding);
+          const y = top + row * (photoHeight + gap);
+
+          if (drawCaptured && capturedImages[i]) {
+            drawCoverImage(capturedImages[i], x, y, photoWidth, photoHeight);
+          } else {
+            ctx.fillStyle = cellBg;
+            ctx.fillRect(x, y, photoWidth, photoHeight);
+          }
+        }
+      } else if (selectedLayout === 'single') {
+        const photoWidth = canvas.width - (padding * 2);
+        const photoHeight = usableHeight;
+        const x = padding;
+        const y = top;
+        if (drawCaptured && capturedImages[0]) {
+          drawCoverImage(capturedImages[0], x, y, photoWidth, photoHeight);
+        } else {
+          ctx.fillStyle = cellBg;
+          ctx.fillRect(x, y, photoWidth, photoHeight);
+        }
+      } else { // 3-vertical or 4-vertical
+        const shots = selectedLayout === '4-vertical' ? 4 : 3;
+        const photoWidth = canvas.width - (padding * 2);
+        const photoHeight = (usableHeight - gap * (shots - 1)) / shots;
+
+        for (let i = 0; i < shots; i++) {
+          const y = top + i * (photoHeight + gap);
+          if (drawCaptured && capturedImages[i]) {
+            drawCoverImage(capturedImages[i], padding, y, photoWidth, photoHeight);
+          } else {
+            ctx.fillStyle = cellBg;
+            ctx.fillRect(padding, y, photoWidth, photoHeight);
+          }
+        }
+      }
+    }
+
+    // Helper to draw image scaled with cover logic
+    function drawCoverImage(imgCanvas, x, y, width, height) {
+      const imgRatio = imgCanvas.width / imgCanvas.height;
+      const targetRatio = width / height;
+      let sw, sh, sx, sy;
+
+      if (imgRatio > targetRatio) {
+        sh = imgCanvas.height;
+        sw = sh * targetRatio;
+        sx = (imgCanvas.width - sw) / 2;
+        sy = 0;
+      } else {
+        sw = imgCanvas.width;
+        sh = sw / targetRatio;
+        sx = 0;
+        sy = (imgCanvas.height - sh) / 2;
+      }
+
+      ctx.drawImage(imgCanvas, sx, sy, sw, sh, x, y, width, height);
+    }
+
+    function drawFooter(tpl) {
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('en-US', { 
+        year: '2-digit', month: '2-digit', day: '2-digit' 
+      }).replace(/\//g, ' • ');
+      
+      const timeStr = today.toLocaleTimeString('en-US', { 
+        hour: '2-digit', minute: '2-digit' 
+      });
+
+      tpl.drawFooter(ctx, canvas.width, canvas.height, dateStr, timeStr);
+    }
+
+    // Design Customization Methods (Themes & Emoji Stickers)
+    function setTheme(color) {
+      if (!templateUsesSwatches()) return;
+      currentTheme = color;
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function selectSticker(emoji, btn) {
+      if (activeSticker === emoji) {
+        activeSticker = null;
+        btn.classList.remove('selected');
+      } else {
+        document.querySelectorAll('.btn-sticker').forEach(b => b.classList.remove('selected'));
+        activeSticker = emoji;
+        btn.classList.add('selected');
+      }
+    }
+
+    function handleCanvasClick(event) {
+      if (!activeSticker) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const x = (event.clientX - rect.left) * scaleX;
+      const y = (event.clientY - rect.top) * scaleY;
+
+      placedStickers.push({ emoji: activeSticker, x, y });
+      
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function drawStickers() {
+      ctx.font = '28px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      placedStickers.forEach(s => {
+        ctx.fillText(s.emoji, s.x, s.y);
+      });
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function undoSticker() {
+      placedStickers.pop();
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function clearStickers() {
+      placedStickers = [];
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    // Fun extra: sprinkle a handful of stickers around the strip at once
+    function randomizeStickers() {
+      const palette = ['⭐', '🖤', '☕', '🎞️', '🌸', '⚡', '🍒', '📸', '💫'];
+      const count = 5;
+      const margin = 40;
+      for (let i = 0; i < count; i++) {
+        const emoji = palette[Math.floor(Math.random() * palette.length)];
+        const x = margin + Math.random() * (canvas.width - margin * 2);
+        const y = margin + Math.random() * (canvas.height - margin * 2);
+        placedStickers.push({ emoji, x, y });
+      }
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    /* Live Video Stream Recording for Live Photo Feature */
+    function startLiveRecording() {
+      try {
+        const stream = video.srcObject;
+        if (!stream) return;
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        recordedChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          if (recordedChunks.length === 0) return;
+          livePhotoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          liveVideo.src = URL.createObjectURL(livePhotoBlob);
+        };
+        mediaRecorder.start();
+      } catch (e) {
+        console.warn("Live recording not supported on this browser.");
+      }
+    }
+
+    function stopLiveRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      mediaRecorder = null;
+    }
+
+    // Export Actions
+    function showExportButtons() {
+      downloadBtn.style.display = 'flex';
+      gifBtn.style.display = 'flex';
+      if (livePhotoBlob) liveBtn.style.display = 'flex';
+      printBtn.style.display = 'flex';
+      customPanel.style.display = 'flex';
+      livePhotoContainer.style.display = livePhotoBlob ? 'block' : 'none';
+    }
+
+    function hideExportButtons() {
+      downloadBtn.style.display = 'none';
+      gifBtn.style.display = 'none';
+      liveBtn.style.display = 'none';
+      printBtn.style.display = 'none';
+      livePhotoContainer.style.display = 'none';
+      customPanel.style.display = 'none';
+    }
+
+    function downloadStrip() {
+      const link = document.createElement('a');
+      link.download = `photostrip-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // GIF Generator via Canvas Loop Stream
+    function downloadGif() {
+      if (burstFrames.length === 0) return;
+
+      const gifCanvas = document.createElement('canvas');
+      gifCanvas.width = 400;
+      gifCanvas.height = 300;
+      const gCtx = gifCanvas.getContext('2d');
+
+      const stream = gifCanvas.captureStream(10);
+      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      const chunks = [];
+
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const link = document.createElement('a');
+        link.download = `photobooth-animation-${Date.now()}.webm`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      };
+
+      recorder.start();
+      let frameIndex = 0;
+
+      const interval = setInterval(() => {
+        if (frameIndex >= burstFrames.length) {
+          clearInterval(interval);
+          recorder.stop();
+          return;
+        }
+        gCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
+        gCtx.drawImage(burstFrames[frameIndex], 0, 0, gifCanvas.width, gifCanvas.height);
+        frameIndex++;
+      }, 200);
+    }
+
+    function downloadLivePhoto() {
+      if (!livePhotoBlob) return;
+      const link = document.createElement('a');
+      link.download = `live-photo-${Date.now()}.webm`;
+      link.href = URL.createObjectURL(livePhotoBlob);
+      link.click();
+    }
+
+    function printStrip() {
+      window.print();
+    }
+
+    // Initial Load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSwatchAvailability();
+      renderBlankStrip();
+    });
+  </script>
+</body>
+</html>
