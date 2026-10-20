@@ -867,6 +867,8 @@
     // user left the studio.
     let sessionToken = 0;
     let sessionActive = false;
+    let activeCountdownId = null;
+    let remoteCountdownId = null;
     
     // Elements
     const video = document.getElementById('webcam');
@@ -1179,6 +1181,11 @@
       // Bumping the token invalidates any in-flight startPhotoboothSession loop,
       // so awaited steps (countdown, capture delays) exit instead of continuing
       // to run against a stopped camera in the background.
+      if (sessionActive && activeCountdownId) {
+        broadcastRoomCountdown(0, 0, 0, activeCountdownId, true);
+      }
+      activeCountdownId = null;
+      clearRoomCountdown();
       sessionToken++;
       sessionActive = false;
       stopLiveRecording();
@@ -1377,6 +1384,8 @@
     async function startPhotoboothSession() {
       cancelActiveSession();
       const myToken = ++sessionToken;
+      const countdownId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      activeCountdownId = countdownId;
       sessionActive = true;
 
       startBtn.disabled = true;
@@ -1402,7 +1411,7 @@
       for (let i = 0; i < shots; i++) {
         if (myToken !== sessionToken) return; // session was cancelled — bail out immediately
         updateShotProgress(i);
-        await runCountdown(countdownDuration, myToken);
+        await runCountdown(countdownDuration, myToken, i + 1, shots, countdownId);
         if (myToken !== sessionToken) return;
         triggerFlash();
         await capturePhotoWithBurst(myToken);
@@ -1416,6 +1425,7 @@
       updateShotProgress(shots);
       stopLiveRecording();
       startBtn.disabled = false;
+      activeCountdownId = null;
       sessionActive = false;
       showExportButtons();
       shareStripWithRoom();
@@ -1450,11 +1460,12 @@
       });
     }
 
-    function runCountdown(seconds, myToken) {
+    function runCountdown(seconds, myToken, shotNumber, totalShots, countdownId) {
       return new Promise((resolve) => {
         countdownEl.style.display = 'block';
         let count = seconds;
         countdownEl.textContent = count;
+        broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
 
         const timer = setInterval(() => {
           if (myToken !== sessionToken) {
@@ -1466,13 +1477,39 @@
           count--;
           if (count > 0) {
             countdownEl.textContent = count;
+            broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
           } else {
             clearInterval(timer);
             countdownEl.style.display = 'none';
+            broadcastRoomCountdown(0, shotNumber, totalShots, countdownId);
             resolve();
           }
         }, 1000);
       });
+    }
+
+    function broadcastRoomCountdown(value, shotNumber, totalShots, id, cancelled = false) {
+      if (selectedMode !== 'call' || !roomDataConnection || !roomDataConnection.open || !id) return;
+      try {
+        roomDataConnection.send({ type: 'booth-countdown', id, value, shotNumber, totalShots, cancelled });
+      } catch (_) {}
+    }
+
+    function showRoomCountdown(message) {
+      if (selectedMode !== 'call' || sessionActive || typeof message.id !== 'string' || !Number.isInteger(message.value) || message.value < 0 || message.value > 10) return;
+      if (message.value === 0) {
+        if (remoteCountdownId !== message.id) return;
+        clearRoomCountdown();
+        return;
+      }
+      remoteCountdownId = message.id;
+      countdownEl.textContent = message.value;
+      countdownEl.style.display = 'block';
+    }
+
+    function clearRoomCountdown() {
+      remoteCountdownId = null;
+      countdownEl.style.display = 'none';
     }
 
     function triggerFlash() {
@@ -1991,6 +2028,10 @@
 
     function handleRoomDataMessage(message) {
       if (!message || typeof message !== 'object') return;
+      if (message.type === 'booth-countdown') {
+        showRoomCountdown(message);
+        return;
+      }
       const isGifStart = message.type === 'gif-start';
       if (message.type === 'strip-start' || isGifStart) {
         const validMime = isGifStart ? message.mime === 'image/gif' : ['image/jpeg','image/png'].includes(message.mime);
