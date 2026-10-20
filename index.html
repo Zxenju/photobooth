@@ -1543,9 +1543,9 @@
           if (effect === 'fisheye') sourceRadius = Math.pow(radius, 0.82);
           else if (effect === 'bulge') sourceRadius = Math.pow(radius, 1.22);
           else if (effect === 'swirl') angle += Math.pow(1 - Math.min(radius, 1), 2) * 2.4;
-          const scale = radius ? (sourceRadius / radius) : 1;
-          const sx = Math.max(0, Math.min(width - 1, Math.round(cx + nx * scale * cx)));
-          const sy = Math.max(0, Math.min(height - 1, Math.round(cy + ny * scale * cy)));
+          const sourceDistance = sourceRadius * Math.SQRT2;
+          const sx = Math.max(0, Math.min(width - 1, Math.round(cx + Math.cos(angle) * sourceDistance * cx)));
+          const sy = Math.max(0, Math.min(height - 1, Math.round(cy + Math.sin(angle) * sourceDistance * cy)));
           map[y * width + x] = sy * width + sx;
         }
       }
