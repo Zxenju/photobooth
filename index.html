@@ -8,7 +8,7 @@
   <!-- Google Fonts for Retro Aesthetics -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="./ANALOGLOGO.png">
   <style>
     :root {
@@ -546,7 +546,46 @@
         box-shadow: none !important;
       }
     }
+  
+
+    /* Analog Studio visual refresh: editorial type, calm paper surfaces, clear controls. */
+    :root{--bg-color:#f1eee7;--card-bg:#fbfaf6;--accent-color:#68724f;--text-color:#252820;--strip-bg:#fffefa;--font-heading:'Playfair Display',serif;--font-mono:'DM Mono','Courier Prime',monospace;--font-script:'Caveat',cursive}
+    body{padding:24px clamp(16px,4vw,64px);background:var(--bg-color);font-family:'DM Sans',Arial,sans-serif}
+    header{max-width:1180px;text-align:left;border-bottom:1px solid #d8d5ca;padding:4px 0 18px;margin-bottom:28px}
+    header h1{font-size:clamp(2rem,4vw,3.3rem);font-style:normal;letter-spacing:-.06em;margin-bottom:3px}
+    header p{font:10px var(--font-mono);letter-spacing:.14em;color:#77796f}
+    .view-section{max-width:1180px}
+    .landing-card,.booth-card,.custom-panel{background:var(--card-bg);border:1px solid #d8d5ca;border-radius:4px;box-shadow:0 12px 36px rgba(43,39,30,.045)}
+    .landing-card{max-width:900px;padding:clamp(18px,3vw,34px);gap:1.4rem}
+    .welcome-copy{padding:2px 0 8px}.welcome-copy .eyebrow{font:10px var(--font-mono);letter-spacing:.13em;text-transform:uppercase;color:#a34f3c;margin-bottom:8px}.welcome-copy h2{font:500 clamp(28px,4vw,43px)/1.02 var(--font-heading);letter-spacing:-.045em;margin:0 0 8px}.welcome-copy h2 em{color:var(--accent-color)}.welcome-copy p{font-size:12px;line-height:1.6;color:#77796f;margin:0;max-width:550px}
+    .section-title{font:10px var(--font-mono);letter-spacing:.13em;color:#a34f3c;margin-bottom:11px}
+    .options-grid{gap:9px}.option-card{background:#f6f4ed;border:1px solid #d8d5ca;border-radius:3px;padding:13px 10px;min-height:83px;transition:background .18s,border-color .18s,transform .18s}.option-card:hover{transform:translateY(-2px);border-color:#88906f;background:white}.option-card.selected{border-color:var(--accent-color);background:#eef0e8;box-shadow:inset 0 0 0 1px var(--accent-color)}
+    .option-card .icon{font-size:1.3rem}.option-card .label{font:600 12px 'DM Sans',sans-serif}.option-card .sublabel{font:10px 'DM Sans',sans-serif;color:#77796f}
+    .btn-start-session,.btn-capture{background:var(--accent-color);border-radius:3px;box-shadow:none;font:11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.btn-start-session{padding:15px}.btn-start-session:hover,.btn-capture:hover{background:#566040}
+    .nav-btn{border-color:#b9bdac;color:var(--accent-color);border-radius:3px;font:10px var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+    .studio-container{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);align-items:start;gap:18px}.booth-card{max-width:none;padding:14px}.camera-container{border:0;border-radius:3px;aspect-ratio:4/3;box-shadow:none;background:#22241f}.controls{margin-top:13px;gap:11px}.filter-selector{justify-content:flex-start;gap:6px}.btn-filter{border:1px solid #d8d5ca;border-radius:20px;padding:7px 10px;font:10px 'DM Sans',sans-serif;color:#62645c}.btn-filter.active,.btn-filter:hover{background:#272a23;border-color:#272a23;color:#fff}.btn-capture{padding:14px}.preview-card{max-width:none;gap:13px}.photostrip-wrapper{border-radius:2px;transform:rotate(1deg);box-shadow:0 12px 32px rgba(43,39,30,.12);padding:14px}canvas{max-width:min(260px,65vw)}.custom-panel{padding:14px;gap:14px}.custom-group label{font:10px var(--font-mono);letter-spacing:.05em;color:#68724f}.custom-group .hint{font:10px 'DM Sans',sans-serif}.btn-action{border-radius:3px;font:10px var(--font-mono);padding:12px}.btn-action.secondary{background:#747a60}.btn-action.secondary:hover{background:#5d644a}
+    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mode-card{display:flex;align-items:center;text-align:left;gap:12px;padding:13px 14px;min-height:68px;border:1px solid #d8d5ca;background:#f6f4ed;color:var(--text-color);border-radius:3px;transition:.18s}.mode-card:hover,.mode-card.selected{border-color:#68724f;background:#eef0e8;box-shadow:inset 0 0 0 1px #68724f}.mode-symbol{font-size:21px;color:#68724f}.mode-card strong,.mode-card small{display:block}.mode-card strong{font:600 12px 'DM Sans',sans-serif}.mode-card small{font:10px 'DM Sans',sans-serif;color:#77796f;margin-top:3px}
+    .room-controls{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px;border:1px solid #d8d5ca;background:#f4f3ed;border-radius:3px}.room-controls strong,.room-controls small{display:block}.room-controls strong{font-size:12px}.room-controls small{font-size:10px;color:#77796f;margin-top:4px;overflow-wrap:anywhere}.btn-room{border:0;background:#68724f;color:white;padding:10px 12px;border-radius:2px;font:9px var(--font-mono);letter-spacing:.04em}.btn-room.secondary{background:transparent;color:#68724f;border:1px solid #bdc2b0}.room-status{grid-column:1/-1;font:10px var(--font-mono);color:#68724f;min-height:12px}
+    .remote-video{position:absolute;right:12px;bottom:12px;width:30%;height:auto;aspect-ratio:4/3;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 16px #0006;transform:scaleX(-1);z-index:4}.remote-label{position:absolute;right:12px;bottom:calc(12px + 23%);z-index:5;background:#252820dd;color:white;padding:4px 6px;font:8px var(--font-mono);letter-spacing:.06em}
+    @media(max-width:800px){.studio-container{grid-template-columns:1fr}.preview-card{display:grid;grid-template-columns:minmax(160px,.7fr) minmax(240px,1fr);align-items:center}.photostrip-wrapper{grid-row:span 2;justify-self:center}.export-buttons,.custom-panel{grid-column:2}.remote-video{width:27%}}
+    @media(max-width:560px){body{padding:15px 12px}.studio-container{gap:12px}.preview-card{display:flex}.mode-grid{grid-template-columns:1fr}.room-controls{grid-template-columns:1fr 1fr}.room-controls>div,.room-status{grid-column:1/-1}.btn-room{min-height:38px}.remote-video{width:34%}.filter-selector{gap:5px}}
+
+  
+    /* Keep navigation clear of the studio title and align the editor tools. */
+    header{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:20px}
+    header h1{grid-column:1;grid-row:1;margin:0;text-align:left}
+    header p{grid-column:1;grid-row:2;margin:3px 0 0;text-align:left}
+    header .nav-btn{position:static;grid-column:2;grid-row:1 / span 2;transform:none;justify-self:end;align-self:center;white-space:nowrap}
+    .preview-card{align-items:stretch}
+    .photostrip-wrapper{align-self:center}
+    .export-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;align-items:stretch}
+    .export-buttons .btn-action{min-height:44px;padding:10px 8px;line-height:1.3;text-align:center}
+    .live-photo-preview{margin:0 auto}
+    @media(max-width:560px){header{column-gap:10px}header h1{font-size:2rem}header .nav-btn{padding:8px 9px;font-size:9px}.export-buttons{grid-template-columns:1fr 1fr}}
+
   </style>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/omggif@1.0.10/omggif.js"></script>
 </head>
 <body>
 
@@ -563,6 +602,14 @@
   <!-- ==================== LANDING / SETUP VIEW ==================== -->
   <div id="landingView" class="view-section active-view">
     <div class="landing-card">
+      <div class="session-mode-block">
+        <div class="section-title">1. Choose Your Booth</div>
+        <div class="mode-grid">
+          <button type="button" class="mode-card selected" onclick="selectMode('solo', this)"><span class="mode-symbol">◎</span><span><strong>Just me</strong><small>Your own camera-ready photobooth</small></span></button>
+          <button type="button" class="mode-card" onclick="selectMode('call', this)"><span class="mode-symbol">◉</span><span><strong>Video call booth</strong><small>Invite someone to join you live</small></span></button>
+        </div>
+      </div>
+
       <div>
         <div class="section-title">1. Select Strip Layout</div>
         <div class="options-grid">
@@ -586,7 +633,7 @@
       </div>
 
       <div>
-        <div class="section-title">2. Design Template</div>
+        <div class="section-title">3. Design Template</div>
         <div class="options-grid">
           <div class="option-card selected" onclick="selectTemplate('classic', this)">
             <span class="icon">🎞️</span>
@@ -607,52 +654,6 @@
             <span class="icon">🌙</span>
             <span class="label">Lock Screen</span>
             <span class="sublabel">Now playing</span>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-title">3. Default Filter</div>
-        <div class="options-grid">
-          <div class="option-card selected" onclick="selectFilterPreset('filter-sepia', this)">
-            <span class="icon">☕</span>
-            <span class="label">Warm Sepia</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-vintage', this)">
-            <span class="icon">🌅</span>
-            <span class="label">Vintage</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-bw', this)">
-            <span class="icon">🖤</span>
-            <span class="label">B & W</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-normal', this)">
-            <span class="icon">🌿</span>
-            <span class="label">Natural</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-golden', this)">
-            <span class="icon">🌇</span>
-            <span class="label">Golden Hour</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-y2k', this)">
-            <span class="icon">💿</span>
-            <span class="label">Y2K</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-moody', this)">
-            <span class="icon">🌆</span>
-            <span class="label">Moody</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-dreamy', this)">
-            <span class="icon">🌸</span>
-            <span class="label">Dreamy Glow</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-polaroid', this)">
-            <span class="icon">🖼️</span>
-            <span class="label">Polaroid Fade</span>
-          </div>
-          <div class="option-card" onclick="selectFilterPreset('filter-cool', this)">
-            <span class="icon">🧊</span>
-            <span class="label">Cool Tone</span>
           </div>
         </div>
       </div>
@@ -687,6 +688,8 @@
       <div class="booth-card">
         <div class="camera-container">
           <video id="webcam" autoplay playsinline muted class="filter-sepia"></video>
+          <video id="remoteWebcam" autoplay playsinline class="remote-video" style="display:none"></video>
+          <div id="remoteLabel" class="remote-label" style="display:none">YOUR PERSON</div>
           <div id="cameraError" class="camera-error">
             ⚠️ Camera access blocked or unavailable.<br>
             Please allow camera permissions or serve this page over HTTPS.
@@ -710,7 +713,13 @@
             <button class="btn-filter" id="btn-cool" onclick="setFilter('filter-cool', this)">Cool Tone</button>
           </div>
 
-          <button id="startBtn" class="btn-capture" onclick="startPhotoboothSession()">TAKE PHOTO STRIP</button>
+          <div id="roomControls" class="room-controls" style="display:none">
+            <div><strong>Invite someone into the booth</strong><small id="roomHint">Create a private link, then send it to your friend.</small></div>
+            <button id="roomButton" class="btn-room" onclick="createRoom()">CREATE INVITE LINK</button>
+            <button id="copyRoomButton" class="btn-room secondary" style="display:none" onclick="copyInvite()">COPY LINK</button>
+            <span id="roomStatus" class="room-status" aria-live="polite"></span>
+          </div>
+          <button id="startBtn" class="btn-capture" onclick="startPhotoboothSession()">START AUTOMATIC PHOTO STRIP</button>
         </div>
       </div>
 
@@ -768,6 +777,7 @@
           <button id="downloadBtn" class="btn-action" style="display:none;" onclick="downloadStrip()">
             💾 Download Image
           </button>
+          <button id="shareBtn" class="btn-action" style="display:none;" onclick="shareStrip()">🔗 Share Photostrip</button>
           <button id="gifBtn" class="btn-action secondary" style="display:none;" onclick="downloadGif()">
             🎬 Download Animated GIF
           </button>
@@ -786,6 +796,9 @@
   <script>
     // State Configuration
     let selectedLayout = '3-vertical';
+    let selectedMode = 'solo';
+    let callPeer = null;
+    let activeCall = null;
     let currentFilter = 'filter-sepia';
     let currentTheme = '#FFFDF2';
     let currentTemplate = 'classic';
@@ -804,6 +817,7 @@
     
     // Elements
     const video = document.getElementById('webcam');
+    const remoteVideo = document.getElementById('remoteWebcam');
     const cameraErrorEl = document.getElementById('cameraError');
     const countdownEl = document.getElementById('countdown');
     const flashEl = document.getElementById('flash');
@@ -817,6 +831,7 @@
     
     const downloadBtn = document.getElementById('downloadBtn');
     const gifBtn = document.getElementById('gifBtn');
+    const shareBtn = document.getElementById('shareBtn');
     const liveBtn = document.getElementById('liveBtn');
     const printBtn = document.getElementById('printBtn');
     
@@ -1077,6 +1092,11 @@
       renderBlankStrip();
     }
 
+    function selectMode(mode, element) {
+      selectedMode = mode;
+      document.querySelectorAll('.mode-card').forEach(card => card.classList.toggle('selected', card === element));
+    }
+
     // Landing Page Setup Selectors
     function selectLayout(layout, element) {
       selectedLayout = layout;
@@ -1119,6 +1139,7 @@
 
       updateSwatchAvailability();
       showView('studioView');
+      document.getElementById('roomControls').style.display = selectedMode === 'call' ? 'grid' : 'none';
       initCamera();
       renderBlankStrip();
     }
@@ -1147,13 +1168,15 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ 
           video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: "user" }, 
-          audio: false 
+          audio: selectedMode === 'call'
         });
         video.srcObject = stream;
         video.className = currentFilter;
         await video.play();
         cameraErrorEl.style.display = 'none';
         startBtn.disabled = false;
+        const inviteRoom = new URLSearchParams(location.search).get('room');
+        if (selectedMode === 'call' && inviteRoom) joinRoomFromInvite(inviteRoom);
       } catch (err) {
         console.error("Camera access error:", err);
         cameraErrorEl.style.display = 'block';
@@ -1162,6 +1185,11 @@
     }
 
     function stopCamera() {
+      if (activeCall) { activeCall.close(); activeCall = null; }
+      if (callPeer) { callPeer.destroy(); callPeer = null; }
+      remoteVideo.srcObject = null;
+      remoteVideo.style.display = 'none';
+      document.getElementById('remoteLabel').style.display = 'none';
       if (video.srcObject) {
         video.srcObject.getTracks().forEach(track => track.stop());
         video.srcObject = null;
@@ -1171,6 +1199,7 @@
     function setFilter(filterClass, btn) {
       currentFilter = filterClass;
       video.className = filterClass;
+      remoteVideo.className = 'remote-video ' + filterClass;
       document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
@@ -1307,6 +1336,12 @@
       tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
 
       tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+      if (remoteVideo.srcObject && remoteVideo.readyState >= 2) {
+        tempCtx.save(); tempCtx.setTransform(1,0,0,1,0,0); tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+        const x = 452, y = 294, w = 248, h = 186;
+        tempCtx.fillStyle = '#fffdfa'; tempCtx.fillRect(x - 7, y - 7, w + 14, h + 14);
+        tempCtx.translate(x + w, 0); tempCtx.scale(-1, 1); tempCtx.drawImage(remoteVideo, 0, y, w, h); tempCtx.restore();
+      }
       return tempCanvas;
     }
 
@@ -1553,6 +1588,7 @@
     function showExportButtons() {
       downloadBtn.style.display = 'flex';
       gifBtn.style.display = 'flex';
+      shareBtn.style.display = 'flex';
       if (livePhotoBlob) liveBtn.style.display = 'flex';
       printBtn.style.display = 'flex';
       customPanel.style.display = 'flex';
@@ -1562,6 +1598,7 @@
     function hideExportButtons() {
       downloadBtn.style.display = 'none';
       gifBtn.style.display = 'none';
+      shareBtn.style.display = 'none';
       liveBtn.style.display = 'none';
       printBtn.style.display = 'none';
       livePhotoContainer.style.display = 'none';
@@ -1569,47 +1606,49 @@
     }
 
     function downloadStrip() {
-      const link = document.createElement('a');
-      link.download = `photostrip-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `photostrip-${Date.now()}.png`;
+        link.href = url; link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }, 'image/png');
     }
 
-    // GIF Generator via Canvas Loop Stream
+    async function shareStrip() {
+      canvas.toBlob(async blob => {
+        if (!blob) return;
+        const file = new File([blob], 'analog-studio-photostrip.png', {type:'image/png'});
+        try {
+          if (navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:'Our Analog Studio photostrip'});
+          else { downloadStrip(); alert('Your browser saved the strip. Attach the PNG to your chat to share it.'); }
+        } catch (error) { if (error.name !== 'AbortError') downloadStrip(); }
+      }, 'image/png');
+    }
+
+    // Encode a real compact GIF with a 3-3-2 color palette for a quick download.
     function downloadGif() {
-      if (burstFrames.length === 0) return;
-
-      const gifCanvas = document.createElement('canvas');
-      gifCanvas.width = 400;
-      gifCanvas.height = 300;
-      const gCtx = gifCanvas.getContext('2d');
-
-      const stream = gifCanvas.captureStream(10);
-      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-      const chunks = [];
-
-      recorder.ondataavailable = e => chunks.push(e.data);
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const link = document.createElement('a');
-        link.download = `photobooth-animation-${Date.now()}.webm`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-      };
-
-      recorder.start();
-      let frameIndex = 0;
-
-      const interval = setInterval(() => {
-        if (frameIndex >= burstFrames.length) {
-          clearInterval(interval);
-          recorder.stop();
-          return;
-        }
-        gCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
-        gCtx.drawImage(burstFrames[frameIndex], 0, 0, gifCanvas.width, gifCanvas.height);
-        frameIndex++;
-      }, 200);
+      if (!burstFrames.length || typeof GifWriter === 'undefined') { alert('The GIF encoder could not load. Check your connection and try again.'); return; }
+      const width = 320, height = 240, palette = [];
+      for (let i = 0; i < 256; i++) {
+        const r = (i >> 5) & 7, g = (i >> 2) & 7, b = i & 3;
+        palette.push((Math.round(r * 255 / 7) << 16) | (Math.round(g * 255 / 7) << 8) | Math.round(b * 255 / 3));
+      }
+      const buffer = new Uint8Array(width * height * burstFrames.length * 2 + 65536);
+      const writer = new GifWriter(buffer, width, height, {loop:0, palette});
+      const frameCanvas = document.createElement('canvas'); frameCanvas.width = width; frameCanvas.height = height;
+      const g = frameCanvas.getContext('2d', {willReadFrequently:true});
+      for (const frame of burstFrames) {
+        g.clearRect(0, 0, width, height); g.drawImage(frame, 0, 0, width, height);
+        const rgba = g.getImageData(0, 0, width, height).data, indexed = new Uint8Array(width * height);
+        for (let p = 0, q = 0; p < rgba.length; p += 4, q++) indexed[q] = (rgba[p] >> 5 << 5) | (rgba[p + 1] >> 5 << 2) | (rgba[p + 2] >> 6);
+        writer.addFrame(0, 0, width, height, indexed, {delay:140, disposal:2});
+      }
+      const length = writer.end(), blob = new Blob([buffer.subarray(0, length)], {type:'image/gif'});
+      const url = URL.createObjectURL(blob), link = document.createElement('a');
+      link.download = `photobooth-animation-${Date.now()}.gif`; link.href = url; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
     function downloadLivePhoto() {
@@ -1624,9 +1663,29 @@
       window.print();
     }
 
+
+    function setRoomStatus(message) { document.getElementById('roomStatus').textContent = message; }
+    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video ' + currentFilter; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
+    function createRoom() {
+      if (!video.srcObject) { setRoomStatus('Turn on your camera first.'); return; }
+      if (typeof Peer === 'undefined') { setRoomStatus('Call service did not load. Check your connection.'); return; }
+      const id = 'analog-' + Math.random().toString(36).slice(2, 9); setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
+      callPeer.on('open', () => { const invite = new URL(location.href); invite.searchParams.set('room', id); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; setRoomStatus('Room ready. Copy the invite and send it to your friend.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Send it to your friend!')).catch(() => {}); });
+      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => setRoomStatus('Your friend left the booth.')); });
+      callPeer.on('error', error => setRoomStatus(error.type === 'unavailable-id' ? 'Could not open the room. Create another invite.' : 'Call connection error. Try again.'));
+    }
+    async function copyInvite() { try { await navigator.clipboard.writeText(document.getElementById('roomHint').textContent); setRoomStatus('Invite copied — paste it into your chat.'); } catch (_) { setRoomStatus('Select and copy the invite link above.'); } }
+    function joinRoomFromInvite(id) {
+      if (!id || typeof Peer === 'undefined' || !video.srcObject) return;
+      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } });
+      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); }); setRoomStatus('Joining your friend’s booth…');
+    }
+
     // Initial Load
     window.addEventListener('DOMContentLoaded', () => {
       updateSwatchAvailability();
+      const inviteRoom = new URLSearchParams(location.search).get('room');
+      if (inviteRoom) { selectedMode = 'call'; const card = Array.from(document.querySelectorAll('.mode-card')).find(item => item.textContent.includes('Video call booth')); if (card) selectMode('call', card); document.getElementById('roomHint').textContent = 'You opened an invite. Enter the booth to join your friend.'; }
       renderBlankStrip();
     });
   </script>
