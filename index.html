@@ -579,7 +579,16 @@
     header .nav-btn{position:static;grid-column:2;grid-row:1 / span 2;transform:none;justify-self:end;align-self:center;white-space:nowrap}
     .preview-card{align-items:stretch}
     .photostrip-wrapper{width:max-content;max-width:100%;}
-    .photostrip-wrapper #stripCanvas{display:block;width:auto!important;height:auto!important;max-width:min(260px,65vw);max-height:70vh;object-fit:contain}
+    .photostrip-wrapper #stripCanvas{display:block;width:auto!important;height:auto!important;max-width:min(340px,75vw);max-height:76vh;object-fit:contain}
+    .view-strip-btn{width:100%;max-width:340px;padding:9px 12px;border:1px solid #b9bdac;background:#f7f6f0;color:#68724f;border-radius:3px;font:10px var(--font-mono);letter-spacing:.06em;cursor:pointer}
+    .view-strip-btn:hover{background:#eef0e8;border-color:#68724f}
+    .strip-viewer{width:min(960px,96vw);max-width:96vw;max-height:96vh;padding:20px;background:#f7f6f0;color:#252820;border:1px solid #c9c6bb;border-radius:6px;box-shadow:0 20px 80px #0005;margin:auto}
+    .strip-viewer[open]{display:grid;grid-template-rows:auto minmax(0,1fr);gap:12px}
+    .strip-viewer::backdrop{background:rgba(20,22,19,.78);backdrop-filter:blur(3px)}
+    .strip-viewer-head{display:flex;justify-content:space-between;align-items:center;gap:12px;font:11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+    .strip-viewer-close{border:1px solid #c9c6bb;background:#fff;padding:8px 12px;border-radius:3px;color:#252820;cursor:pointer}
+    .strip-viewer-image-wrap{min-height:0;display:grid;place-items:center;overflow:auto}
+    .strip-viewer-image-wrap img{display:block;width:auto;height:auto;max-width:90vw;max-height:84vh;object-fit:contain;background:white;box-shadow:0 8px 28px #0002}
     .photostrip-wrapper{align-self:center}
     .export-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;align-items:stretch}
     .export-buttons .btn-action{min-height:44px;padding:10px 8px;line-height:1.3;text-align:center}
@@ -754,6 +763,7 @@
         <div class="photostrip-wrapper">
           <canvas id="stripCanvas" width="400" height="1100" onclick="handleCanvasClick(event)"></canvas>
         </div>
+        <button id="viewStripBtn" class="view-strip-btn" style="display:none" onclick="openStripViewer()">⤢ VIEW STRIP LARGER</button>
         <p id="sharedStripStatus" role="status" style="display:none;text-align:center;color:#68724f;font:10px var(--font-mono);letter-spacing:.04em"></p>
 
         <!-- Design Customization Panel -->
@@ -819,6 +829,11 @@
 
     </div>
   </div>
+
+  <dialog id="stripViewer" class="strip-viewer" aria-label="Large photostrip preview">
+    <div class="strip-viewer-head"><span>Photostrip preview</span><button class="strip-viewer-close" onclick="closeStripViewer()">Close ×</button></div>
+    <div class="strip-viewer-image-wrap"><img id="stripViewerImage" alt="Large preview of your finished photostrip"></div>
+  </dialog>
 
   <script>
     // State Configuration
@@ -1241,7 +1256,7 @@
       // Sync studio filter button states
       document.querySelectorAll('.filter-selector .btn-filter').forEach(b => b.classList.remove('active'));
       video.className = currentFilter;
-      remoteVideo.className = 'remote-video ' + currentFilter;
+      remoteVideo.className = 'remote-video';
       const activeFilterBtn = document.querySelector(`.filter-selector .btn-filter[onclick*="${currentFilter}"]`);
       if (activeFilterBtn) activeFilterBtn.classList.add('active');
       document.querySelectorAll('.lens-selector .btn-filter').forEach(b => b.classList.toggle('active', b.id === `lens-${currentLensEffect}`));
@@ -1319,7 +1334,7 @@
     function setFilter(filterClass, btn) {
       currentFilter = filterClass;
       video.className = filterClass;
-      remoteVideo.className = 'remote-video ' + filterClass;
+      remoteVideo.className = 'remote-video';
       document.querySelectorAll('.filter-selector .btn-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       updateInvitePreferences();
@@ -1346,13 +1361,13 @@
         previewCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
         drawCoverSource(video, previewCtx, 0, 0, lensPreview.width, lensPreview.height);
         previewCtx.restore();
+        applyLensEffect(lensPreview, currentLensEffect);
         if (remoteVideo.srcObject && remoteVideo.readyState >= 2) {
           const x = 226, y = 147, w = 124, h = 93;
-          previewCtx.save(); previewCtx.setTransform(1, 0, 0, 1, 0, 0); previewCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+          previewCtx.save(); previewCtx.setTransform(1, 0, 0, 1, 0, 0); previewCtx.filter = 'none';
           previewCtx.fillStyle = '#fffdfa'; previewCtx.fillRect(x - 4, y - 4, w + 8, h + 8);
           previewCtx.translate(x + w, 0); previewCtx.scale(-1, 1); drawCoverSource(remoteVideo, previewCtx, 0, y, w, h); previewCtx.restore();
         }
-        applyLensEffect(lensPreview, currentLensEffect);
         lensPreviewLastDraw = timestamp;
       }
       lensPreviewFrame = requestAnimationFrame(renderLensPreview);
@@ -1508,13 +1523,14 @@
       tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
 
       drawCoverSource(video, tempCtx, 0, 0, tempCanvas.width, tempCanvas.height);
+      applyLensEffect(tempCanvas, currentLensEffect);
       if (remoteVideo.srcObject && remoteVideo.readyState >= 2) {
-        tempCtx.save(); tempCtx.setTransform(1,0,0,1,0,0); tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+        tempCtx.save(); tempCtx.setTransform(1,0,0,1,0,0); tempCtx.filter = 'none';
         const x = 452, y = 294, w = 248, h = 186;
         tempCtx.fillStyle = '#fffdfa'; tempCtx.fillRect(x - 7, y - 7, w + 14, h + 14);
         tempCtx.translate(x + w, 0); tempCtx.scale(-1, 1); drawCoverSource(remoteVideo, tempCtx, 0, y, w, h); tempCtx.restore();
       }
-      return applyLensEffect(tempCanvas, currentLensEffect);
+      return tempCanvas;
     }
 
     // Crop to fill the photo frame, matching object-fit: cover without stretching the camera image.
@@ -1823,6 +1839,7 @@
 
     // Export Actions
     function showExportButtons() {
+      document.getElementById('viewStripBtn').style.display = 'block';
       downloadBtn.style.display = 'flex';
       gifBtn.style.display = receivedSharedStrip && !sharedGifBlob ? 'none' : 'flex';
       shareBtn.style.display = 'flex';
@@ -1834,6 +1851,7 @@
     }
 
     function hideExportButtons() {
+      document.getElementById('viewStripBtn').style.display = 'none';
       downloadBtn.style.display = 'none';
       gifBtn.style.display = 'none';
       shareBtn.style.display = 'none';
@@ -1841,6 +1859,17 @@
       printBtn.style.display = 'none';
       livePhotoContainer.style.display = 'none';
       customPanel.style.display = 'none';
+    }
+
+    function openStripViewer() {
+      const viewer = document.getElementById('stripViewer');
+      document.getElementById('stripViewerImage').src = canvas.toDataURL('image/png');
+      if (!viewer.open) viewer.showModal();
+    }
+
+    function closeStripViewer() {
+      const viewer = document.getElementById('stripViewer');
+      if (viewer.open) viewer.close();
     }
 
     function downloadStrip() {
@@ -1935,7 +1964,7 @@
     function getInviteBaseUrl() {
       return location.hostname === 'zxenju.github.io' ? location.origin + location.pathname : 'https://zxenju.github.io/photobooth/';
     }
-    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video ' + currentFilter; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
+    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video'; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
     // The video call carries camera/audio only. A separate reliable data
     // channel sends the finished strip to the other participant.
     const STRIP_CHUNK_SIZE = 48000;
