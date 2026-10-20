@@ -595,6 +595,107 @@
     .live-photo-preview{margin:0 auto}
      @media(max-width:560px){header{column-gap:10px}header h1{font-size:2rem}header .nav-btn{padding:8px 9px;font-size:9px}.export-buttons{grid-template-columns:1fr 1fr}.room-qr-panel{align-items:flex-start}.room-qr-code{width:120px;height:120px;flex-basis:120px}}
 
+    /* Focused setup screen. Keep this styling separate from the working camera studio below. */
+    header{border-bottom:0;margin-bottom:26px;row-gap:2px}
+    header h1{display:flex;align-items:center;gap:10px;font-size:clamp(22px,2.2vw,28px);letter-spacing:-.035em}
+    header p{font:12px 'DM Sans',Arial,sans-serif;letter-spacing:0;text-transform:none;color:#676a60}
+    .brand-mark{width:25px;height:25px;display:inline-grid;place-items:center;flex:0 0 25px;background:#68724f;color:#fbfaf6;border-radius:6px}
+    .brand-mark svg{width:17px;height:17px}
+    #landingView.active-view{align-items:stretch}
+    #landingView .setup-page{width:100%;max-width:1180px;margin:0 auto}
+    #landingView .setup-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;align-items:start;gap:44px}
+    #landingView .setup-controls{min-width:0;display:flex;flex-direction:column;gap:24px}
+    #landingView .setup-heading{margin:0 0 2px}
+    #landingView .setup-heading h2{font:600 27px/1.18 'DM Sans',Arial,sans-serif;letter-spacing:-.035em;color:#252820;margin:0 0 5px}
+    #landingView .setup-heading p{font:14px/1.5 'DM Sans',Arial,sans-serif;color:#62645c;margin:0}
+    #landingView .setup-section{min-width:0}
+    #landingView .setup-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:10px}
+    #landingView .setup-section-heading h3,#landingView .preview-panel-heading h3{font:600 15px/1.35 'DM Sans',Arial,sans-serif;color:#252820;margin:0}
+    #landingView .setup-section-heading p,#landingView .preview-panel-heading p{font:12px/1.45 'DM Sans',Arial,sans-serif;color:#686a62;margin:0;text-align:right}
+    #landingView .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    #landingView .mode-card{min-height:68px;padding:12px 14px;gap:12px;border:1px solid #d5d4c9;border-radius:8px;background:#fbfaf6;box-shadow:none;text-align:left;cursor:pointer;transition:background-color .16s,border-color .16s,color .16s}
+    #landingView .mode-card:hover{border-color:#a1a58f;background:#f6f6f0}
+    #landingView .mode-card.selected{border-color:#9ba28a;background:#e9ece2;box-shadow:none}
+    #landingView .mode-symbol{width:22px;height:22px;flex:0 0 22px;display:grid;place-items:center;color:#68724f;font-size:0}
+    #landingView .mode-symbol svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    #landingView .mode-card strong{font:600 13px/1.3 'DM Sans',Arial,sans-serif;color:#252820}
+    #landingView .mode-card small{font:12px/1.4 'DM Sans',Arial,sans-serif;color:#5f6259;margin-top:3px}
+    #landingView .options-grid{display:grid;gap:8px}
+    #landingView .layout-options{grid-template-columns:repeat(4,minmax(0,1fr))}
+    #landingView .template-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+    #landingView .timer-options{grid-template-columns:repeat(3,minmax(0,1fr));max-width:460px}
+    #landingView .option-card{position:relative;min-width:0;min-height:92px;justify-content:center;gap:5px;padding:10px 8px;border:1px solid #d5d4c9;border-radius:8px;background:#fbfaf6;color:#252820;font-family:'DM Sans',Arial,sans-serif;text-align:center;box-shadow:none;cursor:pointer;transition:background-color .16s,border-color .16s,transform .16s}
+    #landingView .option-card:hover{transform:translateY(-1px);border-color:#a1a58f;background:#f6f6f0}
+    #landingView .option-card.selected{border-color:#9ba28a;background:#e9ece2;box-shadow:none}
+    #landingView .option-card:focus-visible,#landingView .mode-card:focus-visible,#landingView .btn-start-session:focus-visible{outline:2px solid #68724f;outline-offset:3px}
+    #landingView .option-card .label{font:600 12px/1.3 'DM Sans',Arial,sans-serif}
+    #landingView .option-card .sublabel{font:11px/1.35 'DM Sans',Arial,sans-serif;color:#5f6259}
+    #landingView .layout-glyph{width:35px;height:34px;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:2px;padding:3px;border:1px solid #9b9a8d;border-radius:3px;background:#f4f1e9}
+    #landingView .layout-glyph[data-shape="2x2-grid"]{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr)}
+    #landingView .layout-glyph[data-shape="4-vertical"]{grid-template-rows:repeat(4,minmax(0,1fr))}
+    #landingView .layout-glyph[data-shape="single"]{grid-template-rows:1fr}
+    #landingView .layout-glyph i{display:block;min-width:0;background:#ded9ca;border-radius:1px}
+    #landingView .template-swatch{width:31px;height:37px;display:flex;flex-direction:column;gap:2px;padding:4px;border:1px solid #b9b4a5;background:#f0ece2;border-radius:2px}
+    #landingView .template-swatch i{display:block;flex:1;background:#ded9ca;border-radius:1px}
+    #landingView .template-swatch[data-template="cinema"]{border:3px solid #a7473c;background:#f3e3dc;padding:2px}
+    #landingView .template-swatch[data-template="cinema"] i{background:#49342e}
+    #landingView .template-swatch[data-template="cute"]{border:2px dotted #fff;background:#dce9f8}
+    #landingView .template-swatch[data-template="cute"] i{background:#b9cee6}
+    #landingView .template-swatch[data-template="lockscreen"]{background:#e5e4e0;border-color:#c8c8c4;padding-top:8px}
+    #landingView .template-swatch[data-template="lockscreen"] i{background:#cbcbc8}
+    #landingView .template-swatch[data-template="retro"]{background:#232521;border-color:#232521}
+    #landingView .template-swatch[data-template="retro"] i{background:#b7ad97}
+    #landingView .template-swatch[data-template="midnight"]{background:#25252a;border-color:#25252a}
+    #landingView .template-swatch[data-template="midnight"] i{background:#73737c}
+    #landingView .timer-options .option-card{min-height:58px;flex-direction:row;gap:6px}
+    #landingView .timer-number{font:600 20px/1 'DM Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;color:#252820}
+    #landingView .setup-start-wrap{margin-top:0}
+    #landingView .btn-start-session{display:flex;align-items:center;justify-content:space-between;min-height:50px;margin:0;padding:0 17px;border:0;border-radius:7px;background:#68724f;color:#fff;font:600 14px/1 'DM Sans',Arial,sans-serif;letter-spacing:0;text-transform:none;box-shadow:none;transition:background-color .16s,transform .16s}
+    #landingView .btn-start-session:hover{background:#596344;transform:translateY(-1px)}
+    #landingView .btn-start-session span{font-size:20px;font-weight:400}
+    #landingView .setup-start-wrap p{margin:8px 0 0;font:12px/1.45 'DM Sans',Arial,sans-serif;color:#62645c}
+    #landingView .setup-preview-panel{position:sticky;top:22px;display:flex;flex-direction:column;gap:15px;padding:17px;background:#e9e7dd;border-radius:10px}
+    #landingView .preview-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    #landingView .preview-panel-heading p{margin-top:2px;text-align:left}
+    #landingView .preview-live-mark{width:8px;height:8px;border-radius:50%;background:#68724f;flex:0 0 8px}
+    #landingView .setup-print{width:208px;min-height:304px;aspect-ratio:.68;margin:1px auto 0;padding:9px;background:#fffefa;color:#574d3f;border:1px solid #d3ccbd;border-radius:2px;transition:background-color .18s,color .18s}
+    #landingView .setup-print-frame{height:100%;min-height:284px;display:flex;flex-direction:column;gap:7px;padding:9px;border:1px solid currentColor}
+    #landingView .setup-print-brand,#landingView .setup-print-footer{flex:0 0 auto;text-align:center;font:600 8px/1.3 'DM Sans',Arial,sans-serif;letter-spacing:.12em}
+    #landingView .setup-print-brand{padding-bottom:3px}
+    #landingView .setup-print-footer{padding-top:3px;letter-spacing:.08em}
+    #landingView .setup-preview-frames{flex:1;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(35px,1fr));gap:5px}
+    #landingView .setup-preview-shot{display:grid;place-items:center;min-width:0;min-height:0;background:#e4e1d8;color:#77766e;overflow:hidden}
+    #landingView .setup-preview-shot span{font:11px/1 'DM Sans',Arial,sans-serif}
+    #landingView .setup-preview-frames[data-layout="2x2-grid"]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(35px,1fr))}
+    #landingView .setup-preview-frames[data-layout="4-vertical"]{grid-template-rows:repeat(4,minmax(34px,1fr))}
+    #landingView .setup-preview-frames[data-layout="single"]{grid-template-rows:1fr}
+    #landingView .setup-print[data-template="cinema"]{background:#f5e7df;color:#51352e;border-color:#b34e43}
+    #landingView .setup-print[data-template="cinema"] .setup-print-frame{border-width:3px}
+    #landingView .setup-print[data-template="cinema"] .setup-preview-shot{background:#30231f;color:#f5e7df}
+    #landingView .setup-print[data-template="cute"]{background:#dce9f8;color:#496686;border:4px dotted #fff}
+    #landingView .setup-print[data-template="cute"] .setup-print-frame{border:0}
+    #landingView .setup-print[data-template="cute"] .setup-preview-shot{background:#bfd2e9;color:#496686}
+    #landingView .setup-print[data-template="lockscreen"]{background:#e9e9e6;color:#292a2b;border-color:#c7c7c3}
+    #landingView .setup-print[data-template="lockscreen"] .setup-print-frame{border-color:#9a9a96;padding-top:21px}
+    #landingView .setup-print[data-template="lockscreen"] .setup-preview-shot{background:#cececa}
+    #landingView .setup-print[data-template="retro"]{background:#242621;color:#e5ddcb;border-color:#242621}
+    #landingView .setup-print[data-template="retro"] .setup-print-frame{border-style:dotted}
+    #landingView .setup-print[data-template="retro"] .setup-preview-shot{background:#59594f;color:#f0e7d2}
+    #landingView .setup-print[data-template="midnight"]{background:#242329;color:#edeaf1;border-color:#242329}
+    #landingView .setup-print[data-template="midnight"] .setup-print-frame{border-color:#88858f}
+    #landingView .setup-print[data-template="midnight"] .setup-preview-shot{background:#48464f;color:#edeaf1}
+    #landingView .preview-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;color:#252820}
+    #landingView .preview-meta strong{font:600 13px/1.35 'DM Sans',Arial,sans-serif}
+    #landingView .preview-meta span{font:12px/1.35 'DM Sans',Arial,sans-serif;color:#5f6259;text-align:right}
+    #landingView .preview-session{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-top:11px;border-top:1px solid #d4d2c7;font:12px/1.4 'DM Sans',Arial,sans-serif}
+    #landingView .preview-session span{color:#5f6259}
+    #landingView .preview-session strong{font-weight:600;text-align:right;color:#252820}
+    #landingView .preview-call-note{margin:0;font:12px/1.45 'DM Sans',Arial,sans-serif;color:#5f6259}
+    @media(max-width:980px){#landingView .setup-grid{grid-template-columns:minmax(0,1fr) 270px;gap:24px}#landingView .layout-options{grid-template-columns:repeat(2,minmax(0,1fr))}#landingView .setup-preview-panel{top:14px}}
+    @media(max-width:760px){#landingView .setup-grid{grid-template-columns:1fr}#landingView .setup-preview-panel{position:static;grid-row:auto;max-width:460px;width:100%;margin:0 auto 6px}#landingView .setup-controls{gap:21px}#landingView .layout-options{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media(max-width:560px){header h1{font-size:22px}.brand-mark{width:22px;height:22px;flex-basis:22px}#landingView .setup-heading h2{font-size:24px}#landingView .setup-heading p{font-size:13px}#landingView .setup-section-heading{display:block}#landingView .setup-section-heading p{margin-top:3px;text-align:left}#landingView .layout-options{grid-template-columns:repeat(2,minmax(0,1fr))}#landingView .template-options{grid-template-columns:repeat(3,minmax(0,1fr))}#landingView .option-card{min-height:88px;padding:9px 5px}#landingView .option-card .label{font-size:12px}#landingView .option-card .sublabel{font-size:11px}#landingView .setup-preview-panel{padding:14px}#landingView .setup-print{width:194px;min-height:290px}}
+    @media(prefers-reduced-motion:reduce){#landingView .option-card,#landingView .mode-card,#landingView .btn-start-session,#landingView .setup-print{transition:none}#landingView .option-card:hover,#landingView .btn-start-session:hover{transform:none}}
+
   </style>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <script src="https://unpkg.com/omggif@1.0.10/omggif.js"></script>
@@ -608,98 +709,93 @@
     <button id="backNavBtn" class="nav-btn" onclick="goBackToSetup()" style="display: none;">
       ← Setup Layout
     </button>
-    <h1>Analog Studio</h1>
-    <p>— AUTOMATIC PHOTOBOOTH —</p>
+    <h1><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M9 3.8v16.4M15 3.8v16.4" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r=".65" fill="currentColor"/><circle cx="7" cy="12" r=".65" fill="currentColor"/><circle cx="7" cy="17" r=".65" fill="currentColor"/><circle cx="17" cy="7" r=".65" fill="currentColor"/><circle cx="17" cy="12" r=".65" fill="currentColor"/><circle cx="17" cy="17" r=".65" fill="currentColor"/></svg></span>Analog Studio</h1>
+    <p>Your photo booth, from setup to print.</p>
   </header>
 
   <!-- ==================== LANDING / SETUP VIEW ==================== -->
   <div id="landingView" class="view-section active-view">
-    <div class="landing-card">
-      <div class="session-mode-block">
-        <div class="section-title">1. Choose Your Booth</div>
-        <div class="mode-grid">
-          <button type="button" class="mode-card selected" onclick="selectMode('solo', this)"><span class="mode-symbol">◎</span><span><strong>Just me</strong><small>Your own camera-ready photobooth</small></span></button>
-          <button type="button" class="mode-card" onclick="selectMode('call', this)"><span class="mode-symbol">◉</span><span><strong>Video call booth</strong><small>Invite someone to join you live</small></span></button>
-        </div>
-      </div>
+    <div class="setup-page" data-ui>
+      <div class="setup-grid">
+        <main class="setup-controls">
+          <div class="setup-heading">
+            <h2>Set up your booth</h2>
+            <p>Choose how you’ll shoot and what your photo strip will look like.</p>
+          </div>
 
-      <div>
-        <div class="section-title">1. Select Strip Layout</div>
-        <div class="options-grid">
-          <div class="option-card selected" onclick="selectLayout('3-vertical', this)">
-            <span class="icon">🎞️</span>
-            <span class="label">1x3 Vertical</span>
-          </div>
-          <div class="option-card" onclick="selectLayout('2x2-grid', this)">
-            <span class="icon">🖼️</span>
-            <span class="label">2x2 Grid</span>
-          </div>
-          <div class="option-card" onclick="selectLayout('4-vertical', this)">
-            <span class="icon">📜</span>
-            <span class="label">1x4 Tall</span>
-          </div>
-          <div class="option-card" onclick="selectLayout('single', this)">
-            <span class="icon">📷</span>
-            <span class="label">Single Shot</span>
-          </div>
-        </div>
-      </div>
+          <section class="setup-section" aria-labelledby="boothModeHeading">
+            <div class="setup-section-heading"><h3 id="boothModeHeading">Your booth</h3><p>Pick a camera setup</p></div>
+            <div class="mode-grid">
+              <button type="button" class="mode-card selected" aria-pressed="true" onclick="selectMode('solo', this)">
+                <span class="mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.3"/><path d="M5.5 20v-1.6a6.5 6.5 0 0 1 13 0V20z"/></svg></span>
+                <span><strong>Just me</strong><small>Use your camera on its own</small></span>
+              </button>
+              <button type="button" class="mode-card" aria-pressed="false" onclick="selectMode('call', this)">
+                <span class="mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="2.8"/><circle cx="17" cy="9" r="2.2"/><path d="M3.5 19v-1.4a5.5 5.5 0 0 1 11 0V19zM15 14a4.5 4.5 0 0 1 5.5 4.4V19h-4"/></svg></span>
+                <span><strong>Video call booth</strong><small>Invite a friend by link or QR</small></span>
+              </button>
+            </div>
+          </section>
 
-      <div>
-        <div class="section-title">3. Design Template</div>
-        <div class="options-grid">
-          <div class="option-card selected" onclick="selectTemplate('classic', this)">
-            <span class="icon">🎞️</span>
-            <span class="label">Classic</span>
-            <span class="sublabel">Analog Studio</span>
-          </div>
-          <div class="option-card" onclick="selectTemplate('cinema', this)">
-            <span class="icon">🎬</span>
-            <span class="label">Cinema</span>
-            <span class="sublabel">Ticket &amp; popcorn</span>
-          </div>
-          <div class="option-card" onclick="selectTemplate('cute', this)">
-            <span class="icon">🌸</span>
-            <span class="label">Super Cute</span>
-            <span class="sublabel">Pastel stickers</span>
-          </div>
-          <div class="option-card" onclick="selectTemplate('lockscreen', this)">
-            <span class="icon">🌙</span>
-            <span class="label">Lock Screen</span>
-            <span class="sublabel">Now playing</span>
-          </div>
-          <div class="option-card" onclick="selectTemplate('retro', this)">
-            <span class="icon">📼</span>
-            <span class="label">Retro Film</span>
-            <span class="sublabel">35mm contact sheet</span>
-          </div>
-          <div class="option-card" onclick="selectTemplate('midnight', this)">
-            <span class="icon">🌌</span>
-            <span class="label">Midnight</span>
-            <span class="sublabel">Darkroom silver</span>
-          </div>
-        </div>
-      </div>
+          <section class="setup-section" aria-labelledby="layoutHeading">
+            <div class="setup-section-heading"><h3 id="layoutHeading">Photo layout</h3><p>Choose how the shots fit on your print</p></div>
+            <div class="options-grid layout-options">
+              <button type="button" class="option-card selected" aria-pressed="true" onclick="selectLayout('3-vertical', this)">
+                <span class="layout-glyph" data-shape="3-vertical" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">1 × 3 strip</span><span class="sublabel">Three frames</span>
+              </button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectLayout('2x2-grid', this)">
+                <span class="layout-glyph" data-shape="2x2-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="label">2 × 2 grid</span><span class="sublabel">Four frames</span>
+              </button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectLayout('4-vertical', this)">
+                <span class="layout-glyph" data-shape="4-vertical" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="label">1 × 4 tall</span><span class="sublabel">Four frames</span>
+              </button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectLayout('single', this)">
+                <span class="layout-glyph" data-shape="single" aria-hidden="true"><i></i></span><span class="label">Single shot</span><span class="sublabel">One photo</span>
+              </button>
+            </div>
+          </section>
 
-      <div>
-        <div class="section-title">4. Countdown Timer</div>
-        <div class="options-grid">
-          <div class="option-card" onclick="selectTimer(3, this)">
-            <span class="icon">⏱️</span>
-            <span class="label">3 Seconds</span>
-          </div>
-          <div class="option-card selected" onclick="selectTimer(5, this)">
-            <span class="icon">⏱️</span>
-            <span class="label">5 Seconds</span>
-          </div>
-          <div class="option-card" onclick="selectTimer(10, this)">
-            <span class="icon">⏱️</span>
-            <span class="label">10 Seconds</span>
-          </div>
-        </div>
-      </div>
+          <section class="setup-section" aria-labelledby="templateHeading">
+            <div class="setup-section-heading"><h3 id="templateHeading">Print design</h3><p>Classic is ready to go. Choose another look anytime.</p></div>
+            <div class="options-grid template-options">
+              <button type="button" class="option-card selected" aria-pressed="true" onclick="selectTemplate('classic', this)"><span class="template-swatch" data-template="classic" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Classic</span><span class="sublabel">Analog Studio</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTemplate('cinema', this)"><span class="template-swatch" data-template="cinema" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Cinema</span><span class="sublabel">Ticket style</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTemplate('cute', this)"><span class="template-swatch" data-template="cute" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Super Cute</span><span class="sublabel">Pastel frame</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTemplate('lockscreen', this)"><span class="template-swatch" data-template="lockscreen" aria-hidden="true"><i></i><i></i></span><span class="label">Lock Screen</span><span class="sublabel">Time and date</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTemplate('retro', this)"><span class="template-swatch" data-template="retro" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Retro Film</span><span class="sublabel">35 mm contact sheet</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTemplate('midnight', this)"><span class="template-swatch" data-template="midnight" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Midnight</span><span class="sublabel">Darkroom silver</span></button>
+            </div>
+          </section>
 
-      <button class="btn-start-session" onclick="enterStudio()">ENTER PHOTOBOOTH STUDIO →</button>
+          <section class="setup-section" aria-labelledby="timerHeading">
+            <div class="setup-section-heading"><h3 id="timerHeading">Countdown</h3><p id="timerHelp">A little time to get ready for each shot</p></div>
+            <div class="options-grid timer-options">
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTimer(3, this)"><span class="timer-number">3</span><span class="label">seconds</span></button>
+              <button type="button" class="option-card selected" aria-pressed="true" onclick="selectTimer(5, this)"><span class="timer-number">5</span><span class="label">seconds</span></button>
+              <button type="button" class="option-card" aria-pressed="false" onclick="selectTimer(10, this)"><span class="timer-number">10</span><span class="label">seconds</span></button>
+            </div>
+          </section>
+
+          <div class="setup-start-wrap">
+            <button id="setupStartButton" class="btn-start-session" onclick="enterStudio()">Enter the booth <span aria-hidden="true">→</span></button>
+            <p id="setupStartNote">Camera access is requested when you enter. Filters are in the studio.</p>
+          </div>
+        </main>
+
+        <aside class="setup-preview-panel" data-ui aria-labelledby="printPreviewHeading">
+          <div class="preview-panel-heading"><div><h3 id="printPreviewHeading">Print preview</h3><p>Updates as you make your choices</p></div><span class="preview-live-mark" aria-hidden="true"></span></div>
+          <div id="setupPrintPreview" class="setup-print" data-template="classic" data-layout="3-vertical" aria-label="Preview of the selected photostrip design">
+            <div class="setup-print-frame">
+              <div class="setup-print-brand">ANALOG STUDIO</div>
+              <div id="setupPreviewFrames" class="setup-preview-frames" aria-hidden="true"></div>
+              <div class="setup-print-footer">KEEP THIS MOMENT</div>
+            </div>
+          </div>
+          <div class="preview-meta"><strong id="previewTemplateName">Classic</strong><span id="previewLayoutName">1 × 3 strip · 3 photos</span></div>
+          <div class="preview-session"><span>Your session</span><strong id="previewSessionDescription">Just me · 5 seconds</strong></div>
+          <p id="previewCallNote" class="preview-call-note">For a video call, your guest sees the same countdown.</p>
+        </aside>
+      </div>
     </div>
   </div>
 
@@ -1223,22 +1319,37 @@
 
     function selectMode(mode, element) {
       selectedMode = mode;
-      document.querySelectorAll('.mode-card').forEach(card => card.classList.toggle('selected', card === element));
+      document.querySelectorAll('#landingView .mode-card').forEach(card => {
+        const selected = card === element;
+        card.classList.toggle('selected', selected);
+        card.setAttribute('aria-pressed', String(selected));
+      });
+      updateSetupPreview();
     }
 
     // Landing Page Setup Selectors
     function selectLayout(layout, element) {
       selectedLayout = layout;
-      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.parentElement.querySelectorAll('.option-card').forEach(c => {
+        const selected = c === element;
+        c.classList.toggle('selected', selected);
+        c.setAttribute('aria-pressed', String(selected));
+      });
       element.classList.add('selected');
       updateInvitePreferences();
+      updateSetupPreview();
     }
 
     function selectTemplate(templateId, element) {
       currentTemplate = templateId;
-      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.parentElement.querySelectorAll('.option-card').forEach(c => {
+        const selected = c === element;
+        c.classList.toggle('selected', selected);
+        c.setAttribute('aria-pressed', String(selected));
+      });
       element.classList.add('selected');
       updateInvitePreferences();
+      updateSetupPreview();
     }
 
     function selectFilterPreset(filterClass, element) {
@@ -1249,9 +1360,50 @@
 
     function selectTimer(seconds, element) {
       countdownDuration = seconds;
-      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.parentElement.querySelectorAll('.option-card').forEach(c => {
+        const selected = c === element;
+        c.classList.toggle('selected', selected);
+        c.setAttribute('aria-pressed', String(selected));
+      });
       element.classList.add('selected');
       updateInvitePreferences();
+      updateSetupPreview();
+    }
+
+    function updateSetupPreview() {
+      const preview = document.getElementById('setupPrintPreview');
+      const frames = document.getElementById('setupPreviewFrames');
+      if (!preview || !frames) return;
+
+      const layouts = {
+        '3-vertical': '1 × 3 strip',
+        '2x2-grid': '2 × 2 grid',
+        '4-vertical': '1 × 4 tall',
+        single: 'Single shot'
+      };
+      const templates = {
+        classic: 'Classic',
+        cinema: 'Cinema',
+        cute: 'Super Cute',
+        lockscreen: 'Lock Screen',
+        retro: 'Retro Film',
+        midnight: 'Midnight'
+      };
+      const shotCount = getShotCount();
+      preview.dataset.layout = selectedLayout;
+      preview.dataset.template = currentTemplate;
+      frames.dataset.layout = selectedLayout;
+      frames.innerHTML = Array.from({ length: shotCount }, (_, index) =>
+        `<div class="setup-preview-shot"><span>Photo ${index + 1}</span></div>`
+      ).join('');
+
+      document.getElementById('previewTemplateName').textContent = templates[currentTemplate] || 'Classic';
+      document.getElementById('previewLayoutName').textContent = `${layouts[selectedLayout] || layouts['3-vertical']} · ${shotCount} ${shotCount === 1 ? 'photo' : 'photos'}`;
+      document.getElementById('previewSessionDescription').textContent = `${selectedMode === 'call' ? 'Video call' : 'Just me'} · ${countdownDuration} seconds`;
+      document.getElementById('previewCallNote').hidden = selectedMode !== 'call';
+      document.getElementById('timerHelp').textContent = selectedMode === 'call'
+        ? 'Your guest sees this countdown too'
+        : 'A little time to get ready for each shot';
     }
 
     function enterStudio() {
@@ -2194,6 +2346,7 @@
         }
         document.getElementById('roomHint').textContent = 'Invite link received. Joining your friend’s booth…';
       }
+      updateSetupPreview();
       renderBlankStrip();
       if (inviteRoom && inviteParams.get('autojoin') === '1') setTimeout(enterStudio, 120);
     });
