@@ -799,6 +799,7 @@
     let selectedMode = 'solo';
     let callPeer = null;
     let activeCall = null;
+    let roomId = null;
     let currentFilter = 'filter-sepia';
     let currentTheme = '#FFFDF2';
     let currentTemplate = 'classic';
@@ -1102,12 +1103,14 @@
       selectedLayout = layout;
       element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
       element.classList.add('selected');
+      updateInvitePreferences();
     }
 
     function selectTemplate(templateId, element) {
       currentTemplate = templateId;
       element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
       element.classList.add('selected');
+      updateInvitePreferences();
     }
 
     function selectFilterPreset(filterClass, element) {
@@ -1120,6 +1123,7 @@
       countdownDuration = seconds;
       element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
       element.classList.add('selected');
+      updateInvitePreferences();
     }
 
     function enterStudio() {
@@ -1202,6 +1206,7 @@
       remoteVideo.className = 'remote-video ' + filterClass;
       document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      updateInvitePreferences();
     }
 
     // Capture & Photobooth Logic
@@ -1664,13 +1669,26 @@
     }
 
 
+    function updateInvitePreferences() {
+      if (!roomId) return;
+      const hint = document.getElementById('roomHint');
+      try {
+        const invite = new URL(hint.textContent, location.href);
+        invite.searchParams.set('layout', selectedLayout);
+        invite.searchParams.set('template', currentTemplate);
+        invite.searchParams.set('filter', currentFilter);
+        invite.searchParams.set('timer', String(countdownDuration));
+        hint.textContent = invite.href;
+      } catch (_) {}
+    }
+
     function setRoomStatus(message) { document.getElementById('roomStatus').textContent = message; }
     function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video ' + currentFilter; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
     function createRoom() {
       if (!video.srcObject) { setRoomStatus('Turn on your camera first.'); return; }
       if (typeof Peer === 'undefined') { setRoomStatus('Call service did not load. Check your connection.'); return; }
-      const id = 'analog-' + Math.random().toString(36).slice(2, 9); setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
-      callPeer.on('open', () => { const invite = new URL(location.href); invite.searchParams.set('room', id); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; setRoomStatus('Room ready. Copy the invite and send it to your friend.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Send it to your friend!')).catch(() => {}); });
+      const id = 'analog-' + Math.random().toString(36).slice(2, 9); roomId = id; setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
+      callPeer.on('open', () => { const invite = new URL(location.href); invite.searchParams.set('room', id); invite.searchParams.set('autojoin', '1'); invite.searchParams.set('layout', selectedLayout); invite.searchParams.set('template', currentTemplate); invite.searchParams.set('filter', currentFilter); invite.searchParams.set('timer', String(countdownDuration)); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; setRoomStatus('Room ready. Copy the invite and send it to your friend.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Send it to your friend!')).catch(() => {}); });
       callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => setRoomStatus('Your friend left the booth.')); });
       callPeer.on('error', error => setRoomStatus(error.type === 'unavailable-id' ? 'Could not open the room. Create another invite.' : 'Call connection error. Try again.'));
     }
@@ -1684,9 +1702,33 @@
     // Initial Load
     window.addEventListener('DOMContentLoaded', () => {
       updateSwatchAvailability();
-      const inviteRoom = new URLSearchParams(location.search).get('room');
-      if (inviteRoom) { selectedMode = 'call'; const card = Array.from(document.querySelectorAll('.mode-card')).find(item => item.textContent.includes('Video call booth')); if (card) selectMode('call', card); document.getElementById('roomHint').textContent = 'You opened an invite. Enter the booth to join your friend.'; }
+      const inviteParams = new URLSearchParams(location.search);
+      const inviteRoom = inviteParams.get('room');
+      if (inviteRoom) {
+        selectedMode = 'call';
+        const modeCard = Array.from(document.querySelectorAll('.mode-card')).find(item => item.textContent.includes('Video call booth'));
+        if (modeCard) selectMode('call', modeCard);
+        const invitedLayout = inviteParams.get('layout');
+        const invitedTemplate = inviteParams.get('template');
+        const invitedFilter = inviteParams.get('filter');
+        const invitedTimer = Number(inviteParams.get('timer'));
+        if (['3-vertical','2x2-grid','4-vertical','single'].includes(invitedLayout)) {
+          const option = Array.from(document.querySelectorAll('.option-card')).find(item => (item.getAttribute('onclick') || '').includes(`selectLayout('${invitedLayout}'`));
+          if (option) selectLayout(invitedLayout, option);
+        }
+        if (['classic','cinema','cute','lockscreen'].includes(invitedTemplate)) {
+          const option = Array.from(document.querySelectorAll('.option-card')).find(item => (item.getAttribute('onclick') || '').includes(`selectTemplate('${invitedTemplate}'`));
+          if (option) selectTemplate(invitedTemplate, option);
+        }
+        if (['filter-sepia','filter-vintage','filter-bw','filter-normal','filter-golden','filter-y2k','filter-moody','filter-dreamy','filter-polaroid','filter-cool'].includes(invitedFilter)) currentFilter = invitedFilter;
+        if ([3,5,10].includes(invitedTimer)) {
+          const option = Array.from(document.querySelectorAll('.option-card')).find(item => (item.getAttribute('onclick') || '').includes(`selectTimer(${invitedTimer}`));
+          if (option) selectTimer(invitedTimer, option);
+        }
+        document.getElementById('roomHint').textContent = 'Invite link received. Joining your friend’s booth…';
+      }
       renderBlankStrip();
+      if (inviteRoom && inviteParams.get('autojoin') === '1') setTimeout(enterStudio, 120);
     });
   </script>
 </body>
