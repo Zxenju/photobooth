@@ -1,50 +1,1680 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f2efe8">
-<meta name="description" content="A cozy online photo booth. Take a photostrip alone or invite a friend to join by video call.">
-<title>Analog Studio — your little photo booth</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<style>
-:root{--paper:#f2efe8;--white:#fbfaf6;--ink:#252820;--muted:#78796f;--line:#d8d5ca;--olive:#68724f;--tomato:#b9503b;--yellow:#e7c676;--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--mono:'DM Mono',monospace}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);min-height:100vh}button,input{font:inherit}button{cursor:pointer}.shell{max-width:1320px;margin:auto;padding:22px clamp(18px,5vw,72px) 36px}.top{height:48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.04em}.mark{height:28px;width:28px;border-radius:50%;display:grid;place-items:center;background:var(--olive);color:#fff;font-size:15px}.top-right,.kicker,.label,.step{font:10px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}.top-right b{color:var(--olive);font-weight:500}.page{display:none}.page.active{display:block}.welcome{padding:38px 0 20px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}.kicker{color:var(--tomato);margin:0 0 15px}.welcome h1,.booth-heading h1{font:500 clamp(45px,7vw,82px)/.96 var(--serif);letter-spacing:-.055em;margin:0}.welcome h1 em,.booth-heading h1 em{color:var(--olive)}.intro{max-width:360px;color:#686961;font-size:14px;line-height:1.75;margin:0 0 5px}.setup{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:22px;align-items:stretch}.setup-main,.setup-aside,.stage,.strip-card{background:var(--white);border:1px solid var(--line);border-radius:4px}.setup-main{padding:24px}.step{color:var(--tomato);margin:0 0 12px}.section-heading{font:500 25px var(--serif);margin:0 0 15px}.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:25px}.mode{min-height:133px;border:1px solid var(--line);background:#f6f4ed;padding:16px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;color:var(--ink);transition:.18s}.mode:hover,.mode.selected{border-color:var(--olive);box-shadow:inset 0 0 0 1px var(--olive);background:#eff0e8}.mode-icon{font-size:25px}.mode strong{display:block;font:600 15px var(--sans);margin:8px 0 3px}.mode small{font-size:11px;color:var(--muted)}.layout-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.layout{background:#f6f4ed;border:1px solid var(--line);padding:10px 8px 9px;color:var(--ink);min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.layout:hover,.layout.selected{border-color:var(--olive);background:#eff0e8;box-shadow:inset 0 0 0 1px var(--olive)}.layout small{font:10px var(--mono);color:#65675e}.glyph{height:36px;display:flex;align-items:center;gap:3px}.glyph i{display:block;width:17px;height:25px;background:#dbd9ce;border:1px solid #bcbbae}.glyph.grid{display:grid;grid-template-columns:repeat(2,12px);grid-template-rows:repeat(2,12px);gap:3px}.glyph.grid i{width:12px;height:12px}.glyph.single i{width:25px;height:31px}.setup-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);margin-top:24px;padding-top:18px;gap:12px}.privacy{max-width:255px;font-size:10px;line-height:1.5;color:var(--muted)}.primary{border:0;border-radius:2px;background:var(--olive);color:white;padding:14px 18px;font:11px var(--mono);letter-spacing:.07em}.primary:hover{background:#566040}.setup-aside{padding:20px;display:flex;flex-direction:column;background:#e8e7dc}.aside-mark{height:145px;display:grid;place-items:center;background:#d5d4c8;position:relative;overflow:hidden;margin-bottom:17px}.sun{position:absolute;width:92px;height:92px;border-radius:50%;background:var(--yellow);top:25px;left:calc(50% - 46px)}.arch{position:absolute;width:116px;height:86px;border-radius:65px 65px 0 0;background:#a1a58b;bottom:0}.plant{position:absolute;font-size:40px;bottom:9px;right:25px}.aside-label{font:10px var(--mono);letter-spacing:.12em;color:var(--olive)}.setup-aside h3{font:italic 24px var(--serif);font-weight:500;line-height:1.1;margin:9px 0}.setup-aside p{font-size:11px;line-height:1.7;color:#686961;margin:0 0 14px}.note{margin-top:auto;border-top:1px solid #c9c8bb;padding-top:12px;font:10px/1.6 var(--mono);color:#73746b}.booth-top{display:flex;justify-content:space-between;align-items:center;padding:25px 0 18px}.back{border:0;background:none;padding:0;color:#62645c;font:11px var(--mono)}.back:hover{color:var(--tomato)}.stepper{display:flex;align-items:center;gap:9px}.stepper i{width:21px;height:1px;background:var(--line)}.stepper .done{color:var(--olive)}.booth-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:20px}.booth-heading h1{font-size:48px}.mode-tag{font:10px var(--mono);letter-spacing:.1em;border:1px solid var(--line);padding:9px 11px;color:var(--olive);white-space:nowrap}.workbench{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}.stage{padding:13px}.stage-head{display:flex;align-items:center;justify-content:space-between;padding:0 1px 12px}.live-state{font:10px var(--mono);letter-spacing:.08em;color:var(--muted)}.led{display:inline-block;height:7px;width:7px;background:#a2a197;border-radius:50%;margin-right:7px}.led.on{background:#77904d;box-shadow:0 0 0 3px #77904d22}.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.video-box{aspect-ratio:4/3;position:relative;overflow:hidden;background:#282a25}.video-box video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.video-box .remote{transform:none}.video-box .placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#eee9dd;padding:18px}.placeholder div{max-width:220px}.placeholder b{font:italic 20px var(--serif);font-weight:500}.placeholder p{font-size:10px;color:#c5c3b9;line-height:1.5}.nameplate{position:absolute;bottom:8px;left:8px;background:#20221bd9;color:white;padding:6px 8px;font:9px var(--mono);letter-spacing:.07em}.single-view{grid-template-columns:1fr}.single-view .local-box{max-width:820px;margin:auto;width:100%}.camera-error{font-size:11px;line-height:1.6;color:#f0eade;max-width:220px}.stage-controls{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:12px}.filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.filter-label{font:9px var(--mono);letter-spacing:.1em;color:var(--muted);margin-right:3px}.filter-btn{border:1px solid var(--line);border-radius:22px;background:transparent;padding:7px 10px;color:#63645d;font:10px var(--sans)}.filter-btn:hover,.filter-btn.selected{background:var(--ink);border-color:var(--ink);color:white}.snap{border:0;background:var(--tomato);color:white;padding:12px 14px;border-radius:2px;font:10px var(--mono);letter-spacing:.07em;white-space:nowrap}.snap:hover{background:#984431}.snap:disabled{opacity:.55;cursor:wait}.strip-card{padding:17px;display:flex;flex-direction:column}.strip-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:12px;border-bottom:1px solid var(--line)}.strip-head h2{font:500 23px var(--serif);margin:0}.count{font:9px var(--mono);color:var(--muted)}.strip-wrap{background:#fffefa;border:1px solid #e5e2d9;padding:9px;margin:15px auto 14px;width:100%;max-width:203px;box-shadow:0 7px 19px #20221b10;transform:rotate(1deg)}#strip{display:block;width:100%;height:auto}.strip-empty{min-height:190px;display:grid;place-items:center;text-align:center;font:italic 15px var(--serif);color:#9b988d}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:auto}.secondary{border:1px solid var(--line);background:transparent;color:var(--ink);padding:11px 8px;font:10px var(--mono)}.secondary:hover{background:#efeee7}.secondary:disabled{opacity:.45;cursor:not-allowed}.download{border:0;background:var(--olive);color:white;padding:11px 8px;font:10px var(--mono)}.download:disabled{opacity:.45;cursor:not-allowed}.call-panel{margin-top:15px;border-top:1px solid var(--line);padding-top:13px}.call-title{display:flex;justify-content:space-between;align-items:center}.call-title b{font-size:12px}.call-title span{font:9px var(--mono);color:var(--olive);letter-spacing:.06em}.call-panel p{font-size:10px;color:var(--muted);line-height:1.5;margin:7px 0 10px}.invite{display:flex;gap:6px}.invite input{width:0;flex:1;min-width:0;background:#f6f4ed;border:1px solid var(--line);padding:9px;font:10px var(--mono);outline:none}.invite input:focus{border-color:var(--olive)}.invite button{border:0;background:var(--ink);color:white;padding:0 11px;font:9px var(--mono)}.call-status{min-height:15px;margin-top:7px;color:var(--olive);font:9px/1.5 var(--mono)}.toast{position:fixed;left:50%;bottom:22px;z-index:4;transform:translate(-50%,12px);background:var(--ink);color:white;padding:11px 15px;font:10px var(--mono);opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.footer{display:flex;justify-content:space-between;margin-top:25px;color:#99968c;font:9px var(--mono);letter-spacing:.08em}.hidden{display:none!important}
-@media(max-width:900px){.setup{grid-template-columns:1fr 235px}.workbench{grid-template-columns:minmax(0,1fr) 270px}.setup-aside{padding:15px}.stage-controls{align-items:flex-start;flex-direction:column}.snap{width:100%}}
-@media(max-width:700px){.welcome{grid-template-columns:1fr;gap:13px;padding-top:30px}.welcome h1{font-size:58px}.setup{grid-template-columns:1fr}.setup-aside{display:none}.workbench{grid-template-columns:1fr}.strip-card{min-height:430px}.strip-wrap{max-width:170px}.booth-heading h1{font-size:41px}.video-grid{grid-template-columns:1fr}.video-box:not(.local-box){aspect-ratio:16/9}.stepper{font-size:9px}.setup-main{padding:18px}.layout-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:420px){.shell{padding-left:14px;padding-right:14px}.welcome h1{font-size:49px}.mode-grid{grid-template-columns:1fr}.mode{min-height:110px}.setup-bottom{align-items:flex-start;flex-direction:column}.setup-bottom .primary{width:100%}.booth-heading{align-items:flex-start;flex-direction:column}.mode-tag{padding:7px 9px}.footer{font-size:8px}}
-</style>
-</head>
-<body><main class="shell">
-<header class="top"><div class="brand"><span class="mark">✳</span> analog studio</div><div class="top-right"><b>●</b> &nbsp;MAKE A LITTLE MEMORY</div></header>
-<section id="setupPage" class="page active">
-<div class="welcome"><div><p class="kicker">A PHOTOBOOTH FOR HERE, THERE & EVERYWHERE</p><h1>Good times,<br><em>in a little frame.</em></h1></div><p class="intro">A cozy corner of the internet for making pictures together. Pick your kind of booth, choose a strip, and we’ll meet you inside.</p></div>
-<div class="setup"><section class="setup-main"><p class="step">01 — SET THE SCENE</p><h2 class="section-heading">How are we taking photos?</h2>
-<div class="mode-grid"><button class="mode selected" data-mode="solo"><span class="mode-icon">◎</span><span><strong>Just me</strong><small>Make a photostrip with your camera</small></span></button><button class="mode" data-mode="call"><span class="mode-icon">◉</span><span><strong>Me + my person</strong><small>Meet in a live video-call booth</small></span></button></div>
-<p class="step">02 — PICK YOUR PRINT</p><h2 class="section-heading">Choose a photo layout</h2><div class="layout-grid"><button class="layout selected" data-layout="strip3"><span class="glyph"><i></i><i></i><i></i></span><small>3 FRAME STRIP</small></button><button class="layout" data-layout="strip4"><span class="glyph"><i></i><i></i><i></i><i></i></span><small>4 FRAME STRIP</small></button><button class="layout" data-layout="grid"><span class="glyph grid"><i></i><i></i><i></i><i></i></span><small>2 × 2 GRID</small></button><button class="layout" data-layout="single"><span class="glyph single"><i></i></span><small>SINGLE SHOT</small></button></div>
-<div class="setup-bottom"><span class="privacy">Your camera is only used inside the booth. Photos are made on your device.</span><button id="enter" class="primary">ENTER THE BOOTH &nbsp;→</button></div></section>
-<aside class="setup-aside"><div class="aside-mark"><span class="sun"></span><span class="arch"></span><span class="plant">✳</span></div><span class="aside-label">A SMALL THING, A BIG MEMORY</span><h3>The best photos<br>happen together.</h3><p>Video-call mode makes a private room to share with your favorite person. You can both see each other while the timer counts down.</p><div class="note">NO ACCOUNT NEEDED<br>CAMERA ACCESS REQUIRED<br>BEST ON A SECURE HTTPS SITE</div></aside></div></section>
-<section id="boothPage" class="page"><div class="booth-top"><button class="back" id="back">← &nbsp;BACK TO SETUP</button><div class="stepper"><span class="done">01 SETUP</span><i></i><span>02 YOUR BOOTH</span></div></div><div class="booth-heading"><div><p class="kicker">YOUR MOMENT STARTS NOW</p><h1>Look this way, <em>love.</em></h1></div><span id="modeTag" class="mode-tag">SOLO BOOTH</span></div>
-<div class="workbench"><section class="stage"><div class="stage-head"><span class="live-state"><i id="led" class="led"></i><span id="cameraLabel">CAMERA OFF</span></span><span class="live-state" id="frameProgress">3 SHOTS · 5 SEC TIMER</span></div><div id="videoGrid" class="video-grid single-view"><div class="video-box local-box"><video id="localVideo" autoplay playsinline muted></video><div id="localPlaceholder" class="placeholder"><div><b>Ready when you are</b><p id="cameraMessage">Allow camera access to step into your booth.</p><button id="cameraButton" class="primary">TURN ON CAMERA</button></div></div><span class="nameplate">YOU</span></div><div id="remoteBox" class="video-box hidden"><video id="remoteVideo" class="remote" autoplay playsinline></video><div id="remotePlaceholder" class="placeholder"><div><b>Waiting for your person…</b><p>Copy your invite link below and send it to them.</p></div></div><span class="nameplate">YOUR PERSON</span></div></div>
-<div class="stage-controls"><div class="filters"><span class="filter-label">FILM LOOK</span><button class="filter-btn selected" data-filter="none">Original</button><button class="filter-btn" data-filter="sepia(38%) contrast(1.05)">Warm</button><button class="filter-btn" data-filter="grayscale(1) contrast(1.1)">B&amp;W</button><button class="filter-btn" data-filter="saturate(1.35) contrast(1.06)">Faded</button><button class="filter-btn" data-filter="contrast(1.16) brightness(.94) saturate(.8)">Moody</button></div><button id="snap" class="snap" disabled>◉ &nbsp;TAKE MY STRIP</button></div></section>
-<aside class="strip-card"><div class="strip-head"><h2>Fresh from the booth</h2><span id="counter" class="count">0 / 3</span></div><div class="strip-wrap"><div id="stripEmpty" class="strip-empty">Your photo<br>will land here.</div><canvas id="strip" width="400" height="1010" class="hidden"></canvas></div><div class="actions"><button id="retake" class="secondary">START OVER</button><button id="download" class="download" disabled>SAVE YOUR STRIP ↓</button></div><div id="callPanel" class="call-panel hidden"><div class="call-title"><b>Bring your person</b><span>LIVE BOOTH</span></div><p>Share the room link. They’ll join your booth on camera.</p><div class="invite"><input id="roomName" maxlength="24" placeholder="Name your room" aria-label="Name your room"><button id="inviteButton">MAKE LINK</button></div><div id="callStatus" class="call-status" aria-live="polite"></div></div></aside></div></section>
-<footer class="footer"><span>MADE FOR THE MOMENTS IN BETWEEN</span><span>CAMERA ON · WORRIES OFF</span></footer></main><div id="toast" class="toast" role="status"></div>
-<script>
-const $=s=>document.querySelector(s);let selectedMode='solo',layout='strip3',filter='none',stream=null,shots=[],peer=null,currentCall=null,roomActive=false,searchRoom=new URLSearchParams(location.search).get('room'),toastTimer;const video=$('#localVideo'),remote=$('#remoteVideo'),canvas=$('#strip'),ctx=canvas.getContext('2d');
-const shotsFor={strip3:3,strip4:4,grid:4,single:1};function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2500)}function status(msg){$('#callStatus').textContent=msg}
-document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{selectedMode=b.dataset.mode;document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('selected',x===b))});document.querySelectorAll('.layout').forEach(b=>b.onclick=()=>{layout=b.dataset.layout;document.querySelectorAll('.layout').forEach(x=>x.classList.toggle('selected',x===b));});
-function setLayoutCanvas(){const n=shotsFor[layout];canvas.width=layout==='grid'?700:400;canvas.height=layout==='single'?560:layout==='grid'?700:n*306+74;paint()}
-function paint(){const n=shotsFor[layout],w=canvas.width,h=canvas.height;ctx.fillStyle='#fffefa';ctx.fillRect(0,0,w,h);ctx.fillStyle='#595d46';ctx.textAlign='center';ctx.font=`${Math.max(13,w*.04)}px "DM Mono",monospace`;ctx.fillText('ANALOG STUDIO',w/2,Math.max(25,w*.065));let cells=[];if(layout==='grid'){const pad=22,gap=10,c=(w-pad*2-gap)/2;for(let i=0;i<4;i++)cells.push({x:pad+(i%2)*(c+gap),y:pad+55+Math.floor(i/2)*(c+gap),w:c,h:c})}else if(layout==='single')cells=[{x:18,y:48,w:w-36,h:h-80}];else{const pad=18,gap=9,c=(h-80-(n-1)*gap)/n;for(let i=0;i<n;i++)cells.push({x:pad,y:48+i*(c+gap),w:w-pad*2,h:c})}cells.forEach((r,i)=>{if(shots[i])ctx.drawImage(shots[i],r.x,r.y,r.w,r.h);else{ctx.fillStyle='#e7e4dc';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle='#aaa79d';ctx.font=`italic ${Math.max(14,w*.045)}px Georgia`;ctx.fillText('frame '+(i+1),r.x+r.w/2,r.y+r.h/2)}});ctx.fillStyle='#77766c';ctx.font=`${Math.max(10,w*.028)}px "DM Mono",monospace`;ctx.fillText(new Date().toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}).toUpperCase(),w/2,h-12);canvas.classList.toggle('hidden',shots.length===0);$('#stripEmpty').classList.toggle('hidden',shots.length>0);$('#counter').textContent=`${shots.length} / ${n}`;$('#download').disabled=!shots.length;$('#snap').textContent=shots.length>=n?'◉  TAKE ANOTHER STRIP':'◉  TAKE MY STRIP';$('#frameProgress').textContent=`${n} SHOT${n>1?'S':''} · 5 SEC TIMER`}
-async function turnOnCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:900},facingMode:'user'},audio:true});video.srcObject=stream;$('#localPlaceholder').classList.add('hidden');$('#cameraLabel').textContent='CAMERA READY';$('#led').classList.add('on');$('#snap').disabled=false;if(searchRoom&&selectedMode==='call')joinRoom(searchRoom)}catch(e){$('#cameraMessage').textContent=e.name==='NotAllowedError'?'Camera permission is off. Allow it in your browser, then try again.':'We couldn’t find a camera. Check your device and try again.';toast('Camera access is needed to take photos.')}}$('#cameraButton').onclick=turnOnCamera;
-document.querySelectorAll('.filter-btn').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('.filter-btn').forEach(x=>x.classList.toggle('selected',x===b));video.style.filter=filter==='none'?'':filter});
-function openBooth(){selectedMode=document.querySelector('.mode.selected').dataset.mode;layout=document.querySelector('.layout.selected').dataset.layout;$('#setupPage').classList.remove('active');$('#boothPage').classList.add('active');$('#modeTag').textContent=selectedMode==='call'?'VIDEO CALL BOOTH':'SOLO BOOTH';$('#callPanel').classList.toggle('hidden',selectedMode!=='call');if(selectedMode==='call')$('#videoGrid').classList.remove('single-view');else $('#videoGrid').classList.add('single-view');setLayoutCanvas();turnOnCamera()}
-$('#enter').onclick=openBooth;$('#back').onclick=()=>{$('#boothPage').classList.remove('active');$('#setupPage').classList.add('active');if(currentCall){currentCall.close();currentCall=null}if(peer){peer.destroy();peer=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null}$('#localPlaceholder').classList.remove('hidden');$('#cameraLabel').textContent='CAMERA OFF';$('#led').classList.remove('on');$('#snap').disabled=true};
-async function snap(){if(!stream)return;const n=shotsFor[layout],btn=$('#snap');if(shots.length>=n){shots=[];paint()}btn.disabled=true;for(let i=5;i>0;i--){btn.textContent=`GET READY · ${i}`;await new Promise(r=>setTimeout(r,650))}const c=document.createElement('canvas');c.width=720;c.height=540;const g=c.getContext('2d');g.save();g.translate(c.width,0);g.scale(-1,1);g.filter=filter;g.drawImage(video,0,0,c.width,c.height);g.restore();shots.push(c);paint();btn.disabled=false;if(shots.length===n)toast('Your photo strip is ready!')}
-$('#snap').onclick=snap;$('#retake').onclick=()=>{shots=[];paint()};$('#download').onclick=()=>{const a=document.createElement('a');a.download='analog-studio-photostrip.png';a.href=canvas.toDataURL('image/png');a.click()};
-function remoteOn(s){remote.srcObject=s;$('#remotePlaceholder').classList.add('hidden');$('#cameraLabel').textContent='BOTH CAMERAS CONNECTED';status('You’re together in the booth. Get ready for a photo!')}function remoteOff(){remote.srcObject=null;$('#remotePlaceholder').classList.remove('hidden');status('Your person left the booth.')}
-function acceptCall(p){p.on('call',incoming=>{incoming.answer(stream);currentCall=incoming;incoming.on('stream',remoteOn);incoming.on('close',remoteOff)})}
-function hostRoom(){if(!stream){status('Turn on your camera first.');return}if(typeof Peer==='undefined'){status('Online call service did not load. Check your connection.');return}const name=$('#roomName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');if(!name){status('Add a room name first.');$('#roomName').focus();return}const id='analog-'+name;status('Opening your room…');peer=new Peer(id);peer.on('open',()=>{roomActive=true;const url=new URL(location.href);url.searchParams.set('room',name);$('#roomName').value=url.href;$('#inviteButton').textContent='COPY LINK';$('#inviteButton').onclick=copyLink;navigator.clipboard?.writeText(url.href).then(()=>status('Room ready — invite link copied!')).catch(()=>status('Room ready — copy the link above and send it.'))});acceptCall(peer);peer.on('error',e=>{status(e.type==='unavailable-id'?'That room name is taken. Pick another.':'Couldn’t open the room. Try again.');peer?.destroy();peer=null;roomActive=false})}
-function copyLink(){const value=$('#roomName').value;navigator.clipboard?.writeText(value).then(()=>status('Invite link copied — send it to your person.')).catch(()=>{ $('#roomName').select();status('Copy the link above and send it to your person.')})}
-function joinRoom(name){if(!stream||typeof Peer==='undefined')return;$('#roomName').value=location.href;$('#inviteButton').textContent='JOINING…';status('Connecting to your person…');peer=new Peer();peer.on('open',()=>{currentCall=peer.call('analog-'+name,stream);currentCall.on('stream',remoteOn);currentCall.on('close',remoteOff);$('#inviteButton').textContent='COPY LINK';$('#inviteButton').onclick=copyLink});acceptCall(peer);peer.on('error',()=>status('Couldn’t join. Ask your person to reopen the room link.'))}
-$('#inviteButton').onclick=hostRoom;if(searchRoom){selectedMode='call';document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('selected',b.dataset.mode==='call'));$('#roomName').value=location.href;$('#inviteButton').textContent='JOIN ROOM';$('#inviteButton').onclick=()=>joinRoom(searchRoom)}
-window.addEventListener('pagehide',()=>{if(stream)stream.getTracks().forEach(t=>t.stop());if(peer)peer.destroy()});paint();
-</script></body></html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analog Studio — Photobooth Experience</title>
+  
+  <!-- Google Fonts for Retro Aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="./ANALOGLOGO.png">
+  <style>
+    :root {
+      --bg-color: #f4efe6;
+      --card-bg: #e8ded1;
+      --accent-color: #8b4513;
+      --text-color: #2b2521;
+      --strip-bg: #fffdfa;
+      --font-heading: 'Playfair Display', serif;
+      --font-mono: 'Courier Prime', monospace;
+      --font-script: 'Caveat', cursive;
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Grain Overlay */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      opacity: 0.05;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+      z-index: 999;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    header h1 {
+      font-family: var(--font-heading);
+      font-size: 2.8rem;
+      font-style: italic;
+      color: var(--text-color);
+      margin-bottom: 0.3rem;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #665a52;
+      letter-spacing: 1px;
+    }
+
+    .nav-btn {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    /* Views Switcher */
+    .view-section {
+      display: none;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .view-section.active-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* LANDING PAGE STYLES */
+    .landing-card {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .option-card {
+      background: #fdfbf7;
+      border: 2px solid #c8b9a6;
+      border-radius: 8px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-color);
+      background: #fff;
+    }
+
+    .option-card.selected {
+      border-color: var(--accent-color);
+      background: #f1e6d8;
+      box-shadow: 0 2px 8px rgba(139, 69, 19, 0.15);
+    }
+
+    .option-card .icon {
+      font-size: 1.6rem;
+    }
+
+    .option-card .label {
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .option-card .sublabel {
+      font-size: 0.68rem;
+      color: #7a6c5d;
+      font-weight: normal;
+    }
+
+    .btn-start-session {
+      background: var(--accent-color);
+      color: #fffdfa;
+      border: none;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(139, 69, 19, 0.25);
+      transition: background-color 0.2s, transform 0.1s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-start-session:hover {
+      background: #72370e;
+    }
+
+    /* BOOTH STUDIO STYLES */
+    .studio-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .booth-card {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .camera-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background-color: #1a1715;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 4px solid #fffdfa;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      transition: filter 0.3s ease;
+    }
+
+    .camera-error {
+      position: absolute;
+      color: #f4efe6;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.85rem;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Filter Classes */
+    .filter-sepia { filter: sepia(0.45) contrast(1.15) brightness(0.95); }
+    .filter-bw { filter: grayscale(1) contrast(1.2) brightness(0.9); }
+    .filter-vintage { filter: sepia(0.2) saturate(1.3) contrast(1.1) hue-rotate(-10deg); }
+    .filter-normal { filter: none; }
+    .filter-golden { filter: sepia(0.2) saturate(1.5) brightness(1.12) contrast(1.05) hue-rotate(-6deg); }
+    .filter-y2k { filter: saturate(1.5) contrast(1.3) brightness(1.05) hue-rotate(4deg); }
+    .filter-moody { filter: contrast(1.25) saturate(0.8) brightness(0.85) sepia(0.12) hue-rotate(-6deg); }
+    .filter-dreamy { filter: brightness(1.18) contrast(0.88) saturate(1.15) blur(0.4px); }
+    .filter-polaroid { filter: contrast(0.85) brightness(1.12) saturate(0.75) sepia(0.12); }
+    .filter-cool { filter: saturate(0.9) contrast(1.12) brightness(1.04) hue-rotate(-10deg); }
+
+    /* Flash Effect */
+    .flash {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: white; opacity: 0; pointer-events: none; z-index: 10;
+    }
+
+    .flash.active { animation: flash-animation 0.4s ease-out; }
+    @keyframes flash-animation { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+
+    /* Countdown Overlay */
+    .countdown-overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-heading);
+      font-size: 6rem;
+      color: #fffdfa;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+    }
+
+    /* Shot progress dots during a session */
+    .shot-progress {
+      position: absolute;
+      top: 12px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 6;
+    }
+
+    .shot-progress .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: background 0.25s;
+    }
+
+    .shot-progress .dot.done { background: #fffdfa; }
+    .shot-progress .dot.current { background: #e0a458; }
+
+    .controls {
+      width: 100%;
+      margin-top: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .filter-selector {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-filter {
+      background: transparent;
+      border: 1px solid #9e8e7c;
+      padding: 0.4rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-filter.active, .btn-filter:hover {
+      background: var(--accent-color);
+      color: #fff;
+      border-color: var(--accent-color);
+    }
+
+    .btn-capture {
+      background: var(--accent-color);
+      color: #fffdfa;
+      border: none;
+      padding: 0.9rem;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(139, 69, 19, 0.25);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn-capture:hover { background: #72370e; }
+    .btn-capture:active { transform: scale(0.98); }
+    .btn-capture:disabled { background: #b5a495; cursor: not-allowed; }
+
+    /* Preview & Customization Section */
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .photostrip-wrapper {
+      background: var(--strip-bg);
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      transform: rotate(-1deg);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .photostrip-wrapper:hover {
+      transform: rotate(0deg) scale(1.01);
+    }
+
+    canvas {
+      display: block;
+      max-width: 260px;
+      height: auto;
+      cursor: crosshair;
+    }
+
+    /* Customization Panel */
+    .custom-panel {
+      background: var(--card-bg);
+      border: 2px solid #d0c2b0;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .custom-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: opacity 0.2s;
+    }
+
+    .custom-group.disabled-group {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .custom-group label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      text-transform: uppercase;
+    }
+
+    .custom-group .hint {
+      font-size: 0.68rem;
+      color: #7a6c5d;
+      font-weight: normal;
+      text-transform: none;
+    }
+
+    .theme-swatches {
+      display: flex;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+
+    .swatch:hover { transform: scale(1.15); }
+
+    .sticker-palette {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-sticker {
+      background: #fdfbf7;
+      border: 1px solid #c8b9a6;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sticker.selected, .btn-sticker:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .sticker-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-mini {
+      background: transparent;
+      border: 1px solid #9e8e7c;
+      padding: 0.2rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-mini:hover { background: #d0c2b0; }
+
+    .export-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .btn-action {
+      background: #2b2521;
+      color: #f4efe6;
+      border: none;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover { background: #453c36; }
+    .btn-action.secondary { background: #8b4513; }
+    .btn-action.secondary:hover { background: #72370e; }
+
+    /* Live Photo Container Modal */
+    .live-photo-preview {
+      width: 100%;
+      max-width: 260px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: none;
+      border: 2px solid #8b4513;
+    }
+
+    .live-photo-preview video {
+      width: 100%;
+      height: auto;
+      transform: none;
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      .photostrip-wrapper, .photostrip-wrapper * {
+        visibility: visible;
+      }
+      .photostrip-wrapper {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%) rotate(0deg) !important;
+        box-shadow: none !important;
+      }
+    }
+  
+
+    /* Analog Studio visual refresh: editorial type, calm paper surfaces, clear controls. */
+    :root{--bg-color:#f1eee7;--card-bg:#fbfaf6;--accent-color:#68724f;--text-color:#252820;--strip-bg:#fffefa;--font-heading:'Playfair Display',serif;--font-mono:'DM Mono','Courier Prime',monospace;--font-script:'Caveat',cursive}
+    body{padding:24px clamp(16px,4vw,64px);background:var(--bg-color);font-family:'DM Sans',Arial,sans-serif}
+    header{max-width:1180px;text-align:left;border-bottom:1px solid #d8d5ca;padding:4px 0 18px;margin-bottom:28px}
+    header h1{font-size:clamp(2rem,4vw,3.3rem);font-style:normal;letter-spacing:-.06em;margin-bottom:3px}
+    header p{font:10px var(--font-mono);letter-spacing:.14em;color:#77796f}
+    .view-section{max-width:1180px}
+    .landing-card,.booth-card,.custom-panel{background:var(--card-bg);border:1px solid #d8d5ca;border-radius:4px;box-shadow:0 12px 36px rgba(43,39,30,.045)}
+    .landing-card{max-width:900px;padding:clamp(18px,3vw,34px);gap:1.4rem}
+    .welcome-copy{padding:2px 0 8px}.welcome-copy .eyebrow{font:10px var(--font-mono);letter-spacing:.13em;text-transform:uppercase;color:#a34f3c;margin-bottom:8px}.welcome-copy h2{font:500 clamp(28px,4vw,43px)/1.02 var(--font-heading);letter-spacing:-.045em;margin:0 0 8px}.welcome-copy h2 em{color:var(--accent-color)}.welcome-copy p{font-size:12px;line-height:1.6;color:#77796f;margin:0;max-width:550px}
+    .section-title{font:10px var(--font-mono);letter-spacing:.13em;color:#a34f3c;margin-bottom:11px}
+    .options-grid{gap:9px}.option-card{background:#f6f4ed;border:1px solid #d8d5ca;border-radius:3px;padding:13px 10px;min-height:83px;transition:background .18s,border-color .18s,transform .18s}.option-card:hover{transform:translateY(-2px);border-color:#88906f;background:white}.option-card.selected{border-color:var(--accent-color);background:#eef0e8;box-shadow:inset 0 0 0 1px var(--accent-color)}
+    .option-card .icon{font-size:1.3rem}.option-card .label{font:600 12px 'DM Sans',sans-serif}.option-card .sublabel{font:10px 'DM Sans',sans-serif;color:#77796f}
+    .btn-start-session,.btn-capture{background:var(--accent-color);border-radius:3px;box-shadow:none;font:11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.btn-start-session{padding:15px}.btn-start-session:hover,.btn-capture:hover{background:#566040}
+    .nav-btn{border-color:#b9bdac;color:var(--accent-color);border-radius:3px;font:10px var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+    .studio-container{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);align-items:start;gap:18px}.booth-card{max-width:none;padding:14px}.camera-container{border:0;border-radius:3px;aspect-ratio:4/3;box-shadow:none;background:#22241f}.controls{margin-top:13px;gap:11px}.filter-selector{justify-content:flex-start;gap:6px}.btn-filter{border:1px solid #d8d5ca;border-radius:20px;padding:7px 10px;font:10px 'DM Sans',sans-serif;color:#62645c}.btn-filter.active,.btn-filter:hover{background:#272a23;border-color:#272a23;color:#fff}.btn-capture{padding:14px}.preview-card{max-width:none;gap:13px}.photostrip-wrapper{border-radius:2px;transform:rotate(1deg);box-shadow:0 12px 32px rgba(43,39,30,.12);padding:14px}canvas{max-width:min(260px,65vw)}.custom-panel{padding:14px;gap:14px}.custom-group label{font:10px var(--font-mono);letter-spacing:.05em;color:#68724f}.custom-group .hint{font:10px 'DM Sans',sans-serif}.btn-action{border-radius:3px;font:10px var(--font-mono);padding:12px}.btn-action.secondary{background:#747a60}.btn-action.secondary:hover{background:#5d644a}
+    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mode-card{display:flex;align-items:center;text-align:left;gap:12px;padding:13px 14px;min-height:68px;border:1px solid #d8d5ca;background:#f6f4ed;color:var(--text-color);border-radius:3px;transition:.18s}.mode-card:hover,.mode-card.selected{border-color:#68724f;background:#eef0e8;box-shadow:inset 0 0 0 1px #68724f}.mode-symbol{font-size:21px;color:#68724f}.mode-card strong,.mode-card small{display:block}.mode-card strong{font:600 12px 'DM Sans',sans-serif}.mode-card small{font:10px 'DM Sans',sans-serif;color:#77796f;margin-top:3px}
+    .room-controls{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px;border:1px solid #d8d5ca;background:#f4f3ed;border-radius:3px}.room-controls strong,.room-controls small{display:block}.room-controls strong{font-size:12px}.room-controls small{font-size:10px;color:#77796f;margin-top:4px;overflow-wrap:anywhere}.btn-room{border:0;background:#68724f;color:white;padding:10px 12px;border-radius:2px;font:9px var(--font-mono);letter-spacing:.04em}.btn-room.secondary{background:transparent;color:#68724f;border:1px solid #bdc2b0}.room-status{grid-column:1/-1;font:10px var(--font-mono);color:#68724f;min-height:12px}
+    .remote-video{position:absolute;right:12px;bottom:12px;width:30%;height:auto;aspect-ratio:4/3;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 16px #0006;transform:scaleX(-1);z-index:4}.remote-label{position:absolute;right:12px;bottom:calc(12px + 23%);z-index:5;background:#252820dd;color:white;padding:4px 6px;font:8px var(--font-mono);letter-spacing:.06em}
+    @media(max-width:800px){.studio-container{grid-template-columns:1fr}.preview-card{display:grid;grid-template-columns:minmax(160px,.7fr) minmax(240px,1fr);align-items:center}.photostrip-wrapper{grid-row:span 2;justify-self:center}.export-buttons,.custom-panel{grid-column:2}.remote-video{width:27%}}
+    @media(max-width:560px){body{padding:15px 12px}.studio-container{gap:12px}.preview-card{display:flex}.mode-grid{grid-template-columns:1fr}.room-controls{grid-template-columns:1fr 1fr}.room-controls>div,.room-status{grid-column:1/-1}.btn-room{min-height:38px}.remote-video{width:34%}.filter-selector{gap:5px}}
+
+  </style>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/omggif@1.0.10/omggif.js"></script>
+</head>
+<body>
+
+  <div class="grain-overlay"></div>
+
+  <header>
+    <button id="backNavBtn" class="nav-btn" onclick="goBackToSetup()" style="display: none;">
+      ← Setup Layout
+    </button>
+    <h1>Analog Studio</h1>
+    <p>— AUTOMATIC PHOTOBOOTH —</p>
+  </header>
+
+  <!-- ==================== LANDING / SETUP VIEW ==================== -->
+  <div id="landingView" class="view-section active-view">
+    <div class="landing-card">
+      <div class="session-mode-block">
+        <div class="section-title">1. Choose Your Booth</div>
+        <div class="mode-grid">
+          <button type="button" class="mode-card selected" onclick="selectMode('solo', this)"><span class="mode-symbol">◎</span><span><strong>Just me</strong><small>Your own camera-ready photobooth</small></span></button>
+          <button type="button" class="mode-card" onclick="selectMode('call', this)"><span class="mode-symbol">◉</span><span><strong>Video call booth</strong><small>Invite someone to join you live</small></span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">1. Select Strip Layout</div>
+        <div class="options-grid">
+          <div class="option-card selected" onclick="selectLayout('3-vertical', this)">
+            <span class="icon">🎞️</span>
+            <span class="label">1x3 Vertical</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('2x2-grid', this)">
+            <span class="icon">🖼️</span>
+            <span class="label">2x2 Grid</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('4-vertical', this)">
+            <span class="icon">📜</span>
+            <span class="label">1x4 Tall</span>
+          </div>
+          <div class="option-card" onclick="selectLayout('single', this)">
+            <span class="icon">📷</span>
+            <span class="label">Single Shot</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">3. Design Template</div>
+        <div class="options-grid">
+          <div class="option-card selected" onclick="selectTemplate('classic', this)">
+            <span class="icon">🎞️</span>
+            <span class="label">Classic</span>
+            <span class="sublabel">Analog Studio</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('cinema', this)">
+            <span class="icon">🎬</span>
+            <span class="label">Cinema</span>
+            <span class="sublabel">Ticket &amp; popcorn</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('cute', this)">
+            <span class="icon">🌸</span>
+            <span class="label">Super Cute</span>
+            <span class="sublabel">Pastel stickers</span>
+          </div>
+          <div class="option-card" onclick="selectTemplate('lockscreen', this)">
+            <span class="icon">🌙</span>
+            <span class="label">Lock Screen</span>
+            <span class="sublabel">Now playing</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">4. Countdown Timer</div>
+        <div class="options-grid">
+          <div class="option-card" onclick="selectTimer(3, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">3 Seconds</span>
+          </div>
+          <div class="option-card selected" onclick="selectTimer(5, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">5 Seconds</span>
+          </div>
+          <div class="option-card" onclick="selectTimer(10, this)">
+            <span class="icon">⏱️</span>
+            <span class="label">10 Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-start-session" onclick="enterStudio()">ENTER PHOTOBOOTH STUDIO →</button>
+    </div>
+  </div>
+
+  <!-- ==================== PHOTOBOOTH STUDIO VIEW ==================== -->
+  <div id="studioView" class="view-section">
+    <div class="studio-container">
+      
+      <!-- Camera Section -->
+      <div class="booth-card">
+        <div class="camera-container">
+          <video id="webcam" autoplay playsinline muted class="filter-sepia"></video>
+          <video id="remoteWebcam" autoplay playsinline class="remote-video" style="display:none"></video>
+          <div id="remoteLabel" class="remote-label" style="display:none">YOUR PERSON</div>
+          <div id="cameraError" class="camera-error">
+            ⚠️ Camera access blocked or unavailable.<br>
+            Please allow camera permissions or serve this page over HTTPS.
+          </div>
+          <div id="shotProgress" class="shot-progress"></div>
+          <div id="flash" class="flash"></div>
+          <div id="countdown" class="countdown-overlay">3</div>
+        </div>
+
+        <div class="controls">
+          <div class="filter-selector">
+            <button class="btn-filter" id="btn-sepia" onclick="setFilter('filter-sepia', this)">Warm Sepia</button>
+            <button class="btn-filter" id="btn-vintage" onclick="setFilter('filter-vintage', this)">Vintage</button>
+            <button class="btn-filter" id="btn-bw" onclick="setFilter('filter-bw', this)">B&W</button>
+            <button class="btn-filter" id="btn-normal" onclick="setFilter('filter-normal', this)">Natural</button>
+            <button class="btn-filter" id="btn-golden" onclick="setFilter('filter-golden', this)">Golden Hour</button>
+            <button class="btn-filter" id="btn-y2k" onclick="setFilter('filter-y2k', this)">Y2K</button>
+            <button class="btn-filter" id="btn-moody" onclick="setFilter('filter-moody', this)">Moody</button>
+            <button class="btn-filter" id="btn-dreamy" onclick="setFilter('filter-dreamy', this)">Dreamy</button>
+            <button class="btn-filter" id="btn-polaroid" onclick="setFilter('filter-polaroid', this)">Polaroid</button>
+            <button class="btn-filter" id="btn-cool" onclick="setFilter('filter-cool', this)">Cool Tone</button>
+          </div>
+
+          <div id="roomControls" class="room-controls" style="display:none">
+            <div><strong>Invite someone into the booth</strong><small id="roomHint">Create a private link, then send it to your friend.</small></div>
+            <button id="roomButton" class="btn-room" onclick="createRoom()">CREATE INVITE LINK</button>
+            <button id="copyRoomButton" class="btn-room secondary" style="display:none" onclick="copyInvite()">COPY LINK</button>
+            <span id="roomStatus" class="room-status" aria-live="polite"></span>
+          </div>
+          <button id="startBtn" class="btn-capture" onclick="startPhotoboothSession()">START AUTOMATIC PHOTO STRIP</button>
+        </div>
+      </div>
+
+      <!-- Photostrip Preview & Customization Actions -->
+      <div class="preview-card">
+        <div class="photostrip-wrapper">
+          <canvas id="stripCanvas" width="400" height="1100" onclick="handleCanvasClick(event)"></canvas>
+        </div>
+
+        <!-- Design Customization Panel -->
+        <div id="customPanel" class="custom-panel" style="display: none;">
+          <div id="swatchGroup" class="custom-group">
+            <label>1. Frame Theme Color <span class="hint" id="swatchHint"></span></label>
+            <div class="theme-swatches">
+              <div class="swatch" style="background: #FFFDF2;" onclick="setTheme('#FFFDF2')" title="Warm White"></div>
+              <div class="swatch" style="background: #1A1817;" onclick="setTheme('#1A1817')" title="Midnight Black"></div>
+              <div class="swatch" style="background: #F4E2DE;" onclick="setTheme('#F4E2DE')" title="Pastel Pink"></div>
+              <div class="swatch" style="background: #D5E0D8;" onclick="setTheme('#D5E0D8')" title="Matcha Green"></div>
+              <div class="swatch" style="background: #D3E0E8;" onclick="setTheme('#D3E0E8')" title="Retro Teal"></div>
+              <div class="swatch" style="background: #E8D9F0;" onclick="setTheme('#E8D9F0')" title="Lavender"></div>
+              <div class="swatch" style="background: #F0DCC8;" onclick="setTheme('#F0DCC8')" title="Terracotta"></div>
+              <div class="swatch" style="background: #FBE8EE;" onclick="setTheme('#FBE8EE')" title="Blush"></div>
+              <div class="swatch" style="background: #1E2A3A;" onclick="setTheme('#1E2A3A')" title="Midnight Navy"></div>
+              <div class="swatch" style="background: #FFF6DC;" onclick="setTheme('#FFF6DC')" title="Buttercream"></div>
+            </div>
+          </div>
+
+          <div class="custom-group">
+            <label>2. Stamp Emojis (Click Canvas to Place)</label>
+            <div class="sticker-palette">
+              <button class="btn-sticker" onclick="selectSticker('⭐', this)">⭐</button>
+              <button class="btn-sticker" onclick="selectSticker('🖤', this)">🖤</button>
+              <button class="btn-sticker" onclick="selectSticker('☕', this)">☕</button>
+              <button class="btn-sticker" onclick="selectSticker('🎞️', this)">🎞️</button>
+              <button class="btn-sticker" onclick="selectSticker('🌸', this)">🌸</button>
+              <button class="btn-sticker" onclick="selectSticker('⚡', this)">⚡</button>
+              <button class="btn-sticker" onclick="selectSticker('🍒', this)">🍒</button>
+              <button class="btn-sticker" onclick="selectSticker('📸', this)">📸</button>
+              <button class="btn-sticker" onclick="selectSticker('💫', this)">💫</button>
+            </div>
+            <div class="sticker-actions">
+              <button class="btn-mini" onclick="undoSticker()">↩ Undo Stamp</button>
+              <button class="btn-mini" onclick="randomizeStickers()">🎲 Surprise Me</button>
+              <button class="btn-mini" onclick="clearStickers()">🗑️ Clear All</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Photo Loop Player -->
+        <div id="livePhotoContainer" class="live-photo-preview">
+          <video id="liveVideo" autoplay loop muted playsinline></video>
+        </div>
+
+        <div class="export-buttons">
+          <button id="downloadBtn" class="btn-action" style="display:none;" onclick="downloadStrip()">
+            💾 Download Image
+          </button>
+          <button id="shareBtn" class="btn-action" style="display:none;" onclick="shareStrip()">🔗 Share Photostrip</button>
+          <button id="gifBtn" class="btn-action secondary" style="display:none;" onclick="downloadGif()">
+            🎬 Download Animated GIF
+          </button>
+          <button id="liveBtn" class="btn-action secondary" style="display:none;" onclick="downloadLivePhoto()">
+            📹 Download Live Photo
+          </button>
+          <button id="printBtn" class="btn-action" style="display:none;" onclick="printStrip()">
+            🖨️ Print Photostrip
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State Configuration
+    let selectedLayout = '3-vertical';
+    let selectedMode = 'solo';
+    let callPeer = null;
+    let activeCall = null;
+    let currentFilter = 'filter-sepia';
+    let currentTheme = '#FFFDF2';
+    let currentTemplate = 'classic';
+    let countdownDuration = 5;
+    let activeSticker = null;
+    let placedStickers = []; // Array of { emoji, x, y }
+
+    // Session control — lets us safely cancel an in-progress photoshoot
+    // when the user navigates back to setup mid-session. This is the
+    // core fix for the "not resetting properly" bug: previously the
+    // capture loop had no way to know it should stop, so it kept
+    // running (still pushing frames, still recording) even after the
+    // user left the studio.
+    let sessionToken = 0;
+    let sessionActive = false;
+    
+    // Elements
+    const video = document.getElementById('webcam');
+    const remoteVideo = document.getElementById('remoteWebcam');
+    const cameraErrorEl = document.getElementById('cameraError');
+    const countdownEl = document.getElementById('countdown');
+    const flashEl = document.getElementById('flash');
+    const startBtn = document.getElementById('startBtn');
+    const canvas = document.getElementById('stripCanvas');
+    const ctx = canvas.getContext('2d');
+    const customPanel = document.getElementById('customPanel');
+    const shotProgressEl = document.getElementById('shotProgress');
+    const swatchGroup = document.getElementById('swatchGroup');
+    const swatchHint = document.getElementById('swatchHint');
+    
+    const downloadBtn = document.getElementById('downloadBtn');
+    const gifBtn = document.getElementById('gifBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const liveBtn = document.getElementById('liveBtn');
+    const printBtn = document.getElementById('printBtn');
+    
+    const liveVideo = document.getElementById('liveVideo');
+    const livePhotoContainer = document.getElementById('livePhotoContainer');
+
+    const capturedImages = [];
+    const burstFrames = []; // For GIF creation
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let livePhotoBlob = null;
+
+    /* ============================================================
+       TEMPLATES
+       Each template controls the background, border decoration,
+       corner stickers and footer of the photostrip. Photo cell
+       positions are computed generically in drawLayoutGrid() using
+       each template's padding/gap/header numbers, so every template
+       works with every strip layout.
+       ============================================================ */
+    const TEMPLATES = {
+      classic: {
+        headerHeight: 0,
+        footerHeight: 90,
+        pad: 25,
+        gap: 18,
+        cellBg(theme) { return isDarkColor(theme) ? shadeColor(theme, 12) : '#EFEAE1'; },
+        drawBackground(c, w, h) {
+          c.fillStyle = currentTheme;
+          c.fillRect(0, 0, w, h);
+        },
+        drawDecor() { /* none — user stickers only */ },
+        drawFooter(c, w, h, dateStr, timeStr) {
+          const dark = isDarkColor(currentTheme);
+          c.fillStyle = dark ? '#FFFDF2' : '#8B4513';
+          c.font = 'bold 22px "Courier Prime", monospace';
+          c.textAlign = 'center';
+          c.fillText('ANALOG STUDIO', w / 2, h - 65);
+          c.fillStyle = dark ? '#A09080' : '#A08E7D';
+          c.font = '14px "Courier Prime", monospace';
+          c.fillText(`${dateStr}  ${timeStr}`, w / 2, h - 40);
+        }
+      },
+      cinema: {
+        headerHeight: 0,
+        footerHeight: 130,
+        pad: 34,
+        gap: 20,
+        cellBg() { return '#231313'; },
+        drawBackground(c, w, h) {
+          // Cream / dusty-pink vertical stripes
+          const stripeW = 22;
+          for (let x = 0, i = 0; x < w; x += stripeW, i++) {
+            c.fillStyle = i % 2 === 0 ? '#F6E4DE' : '#FBEDE8';
+            c.fillRect(x, 0, stripeW, h);
+          }
+          // Scalloped red ticket border
+          c.fillStyle = '#B5342A';
+          const borderW = 16;
+          c.fillRect(0, 0, w, borderW);
+          c.fillRect(0, h - borderW, w, borderW);
+          c.fillRect(0, 0, borderW, h);
+          c.fillRect(w - borderW, 0, borderW, h);
+          c.fillStyle = '#F6E4DE';
+          const scallop = 14;
+          for (let x = borderW / 2; x < w; x += scallop) {
+            c.beginPath(); c.arc(x, 0, 6, 0, Math.PI * 2); c.fill();
+            c.beginPath(); c.arc(x, h, 6, 0, Math.PI * 2); c.fill();
+          }
+          for (let y = borderW / 2; y < h; y += scallop) {
+            c.beginPath(); c.arc(0, y, 6, 0, Math.PI * 2); c.fill();
+            c.beginPath(); c.arc(w, y, 6, 0, Math.PI * 2); c.fill();
+          }
+        },
+        drawDecor(c, w, h) {
+          c.textAlign = 'center';
+          c.font = '30px serif';
+          c.fillText('🎬', w - 34, 56);
+          c.fillText('🍿', 34, 56);
+          c.fillText('🎟️', 34, h - 150);
+          c.fillText('🎞️', w - 34, h - 150);
+        },
+        drawFooter(c, w, h) {
+          const barH = 96;
+          const barY = h - barH;
+          c.fillStyle = '#B5342A';
+          c.fillRect(0, barY, w, barH);
+          c.fillStyle = '#FBEDE8';
+          c.font = 'italic bold 30px "Playfair Display", serif';
+          c.textAlign = 'center';
+          c.fillText('CINEMA', w / 2, barY + 44);
+          c.font = '13px "Courier Prime", monospace';
+          c.fillText("★ ADMIT ONE — TONIGHT'S FEATURE ★", w / 2, barY + 70);
+        }
+      },
+      cute: {
+        headerHeight: 0,
+        footerHeight: 130,
+        pad: 30,
+        gap: 22,
+        cellBg() { return '#FFFFFF'; },
+        drawBackground(c, w, h) {
+          c.fillStyle = '#DDEBFB';
+          c.fillRect(0, 0, w, h);
+          // Dashed scalloped double border
+          c.strokeStyle = '#FFFFFF';
+          c.lineWidth = 10;
+          c.setLineDash([2, 10]);
+          c.lineCap = 'round';
+          c.strokeRect(14, 14, w - 28, h - 28);
+          c.setLineDash([]);
+        },
+        drawDecor(c, w, h) {
+          c.textAlign = 'center';
+          c.font = '26px serif';
+          const spots = [
+            ['🧸', 40, 44], ['💌', w - 40, 70], ['🍓', 34, h - 190],
+            ['🐰', w - 36, h - 220], ['❤️', 40, h - 100], ['✨', w - 34, 40]
+          ];
+          spots.forEach(([emoji, x, y]) => c.fillText(emoji, x, y));
+        },
+        drawFooter(c, w, h) {
+          c.textAlign = 'center';
+          c.fillStyle = '#4E6E96';
+          c.font = 'bold 42px "Caveat", cursive';
+          c.fillText('SUPER CUTE', w / 2, h - 70);
+          c.font = '16px "Caveat", cursive';
+          c.fillStyle = '#7C93B3';
+          c.fillText('@analogstudio', w / 2, h - 42);
+          c.font = '20px serif';
+          c.fillText('🌸  ⭐  🌸', w / 2, h - 18);
+        }
+      },
+      lockscreen: {
+        headerHeight: 150,
+        footerHeight: 110,
+        pad: 0,
+        gap: 0,
+        cellBg() { return '#D8D8D8'; },
+        drawBackground(c, w, h) {
+          const grad = c.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, '#F2F2F2');
+          grad.addColorStop(1, '#E6E6E6');
+          c.fillStyle = grad;
+          c.fillRect(0, 0, w, h);
+        },
+        drawDecor() { /* clean, no decoration */ },
+        drawHeader(c, w, dateStr, timeStr) {
+          c.textAlign = 'center';
+          c.fillStyle = '#1A1A1A';
+          c.font = '20px "Courier Prime", monospace';
+          c.fillText(dateStr, w / 2, 46);
+          c.font = 'bold 54px "Courier Prime", monospace';
+          c.fillText(timeStr, w / 2, 104);
+        },
+        drawFooter(c, w, h) {
+          const barY = h - 110;
+          c.textAlign = 'center';
+          c.fillStyle = '#8A8A8A';
+          c.font = '13px "Courier Prime", monospace';
+          c.fillText('Now playing', w / 2, barY + 22);
+
+          // progress line
+          const lineY = barY + 46;
+          c.strokeStyle = '#C9C9C9';
+          c.lineWidth = 3;
+          c.beginPath(); c.moveTo(40, lineY); c.lineTo(w - 40, lineY); c.stroke();
+          c.strokeStyle = '#1A1A1A';
+          c.beginPath(); c.moveTo(40, lineY); c.lineTo(w / 2, lineY); c.stroke();
+          c.fillStyle = '#1A1A1A';
+          c.beginPath(); c.arc(w / 2, lineY, 5, 0, Math.PI * 2); c.fill();
+
+          // controls: prev, play/pause, next
+          const cy = barY + 82;
+          c.fillStyle = '#1A1A1A';
+          // prev triangle
+          c.beginPath();
+          c.moveTo(w / 2 - 46, cy - 10); c.lineTo(w / 2 - 46, cy + 10); c.lineTo(w / 2 - 60, cy); c.fill();
+          // next triangle
+          c.beginPath();
+          c.moveTo(w / 2 + 46, cy - 10); c.lineTo(w / 2 + 46, cy + 10); c.lineTo(w / 2 + 60, cy); c.fill();
+          // play/pause circle with bars
+          c.beginPath(); c.arc(w / 2, cy, 20, 0, Math.PI * 2); c.fill();
+          c.fillStyle = '#F2F2F2';
+          c.fillRect(w / 2 - 7, cy - 8, 4, 16);
+          c.fillRect(w / 2 + 3, cy - 8, 4, 16);
+        }
+      }
+    };
+
+    function templateUsesSwatches() {
+      return currentTemplate === 'classic';
+    }
+
+    // Works out if a hex color is "dark" so Classic can pick readable
+    // text/cell colors no matter which of the swatch colors is active.
+    function isDarkColor(hex) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance < 0.5;
+    }
+
+    function shadeColor(hex, percent) {
+      const r = Math.min(255, parseInt(hex.slice(1, 3), 16) + percent * 2.55);
+      const g = Math.min(255, parseInt(hex.slice(3, 5), 16) + percent * 2.55);
+      const b = Math.min(255, parseInt(hex.slice(5, 7), 16) + percent * 2.55);
+      return `rgb(${r | 0}, ${g | 0}, ${b | 0})`;
+    }
+
+    // View Navigation
+    function showView(viewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+      document.getElementById(viewId).classList.add('active-view');
+
+      const backNavBtn = document.getElementById('backNavBtn');
+      backNavBtn.style.display = (viewId === 'studioView') ? 'flex' : 'none';
+    }
+
+    // Called by the "← Setup Layout" button. This fully tears down the
+    // studio (camera, in-progress countdown/recording, captured shots,
+    // stickers, export buttons) so the next visit to the studio always
+    // starts from a clean slate — this is the reset fix.
+    function goBackToSetup() {
+      cancelActiveSession();
+      stopCamera();
+      resetStudioState();
+      showView('landingView');
+    }
+
+    function cancelActiveSession() {
+      // Bumping the token invalidates any in-flight startPhotoboothSession loop,
+      // so awaited steps (countdown, capture delays) exit instead of continuing
+      // to run against a stopped camera in the background.
+      sessionToken++;
+      sessionActive = false;
+      stopLiveRecording();
+      countdownEl.style.display = 'none';
+      flashEl.classList.remove('active');
+    }
+
+    function resetStudioState() {
+      capturedImages.length = 0;
+      burstFrames.length = 0;
+      placedStickers = [];
+      activeSticker = null;
+      recordedChunks = [];
+      livePhotoBlob = null;
+      liveVideo.pause();
+      liveVideo.removeAttribute('src');
+      liveVideo.load();
+      livePhotoContainer.style.display = 'none';
+      shotProgressEl.innerHTML = '';
+      startBtn.disabled = false;
+      hideExportButtons();
+      document.querySelectorAll('.btn-sticker').forEach(b => b.classList.remove('selected'));
+      renderBlankStrip();
+    }
+
+    function selectMode(mode, element) {
+      selectedMode = mode;
+      document.querySelectorAll('.mode-card').forEach(card => card.classList.toggle('selected', card === element));
+    }
+
+    // Landing Page Setup Selectors
+    function selectLayout(layout, element) {
+      selectedLayout = layout;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectTemplate(templateId, element) {
+      currentTemplate = templateId;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectFilterPreset(filterClass, element) {
+      currentFilter = filterClass;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectTimer(seconds, element) {
+      countdownDuration = seconds;
+      element.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function enterStudio() {
+      // Always start from a guaranteed-clean state, even if the user
+      // bounced between setup and studio several times already.
+      cancelActiveSession();
+      resetStudioState();
+
+      // Sync studio filter button states
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      const activeFilterBtn = document.querySelector(`.btn-filter[onclick*="${currentFilter}"]`);
+      if (activeFilterBtn) activeFilterBtn.classList.add('active');
+
+      // Update button text with number of shots
+      const shotCount = getShotCount();
+      startBtn.textContent = `TAKE PHOTO STRIP (${shotCount} SHOT${shotCount > 1 ? 'S' : ''})`;
+
+      updateSwatchAvailability();
+      showView('studioView');
+      document.getElementById('roomControls').style.display = selectedMode === 'call' ? 'grid' : 'none';
+      initCamera();
+      renderBlankStrip();
+    }
+
+    function updateSwatchAvailability() {
+      if (templateUsesSwatches()) {
+        swatchGroup.classList.remove('disabled-group');
+        swatchHint.textContent = '';
+      } else {
+        swatchGroup.classList.add('disabled-group');
+        swatchHint.textContent = '(built into template)';
+      }
+    }
+
+    function getShotCount() {
+      switch (selectedLayout) {
+        case 'single': return 1;
+        case '2x2-grid': return 4;
+        case '4-vertical': return 4;
+        case '3-vertical': default: return 3;
+      }
+    }
+
+    // Camera Lifecycle
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: "user" }, 
+          audio: selectedMode === 'call'
+        });
+        video.srcObject = stream;
+        video.className = currentFilter;
+        await video.play();
+        cameraErrorEl.style.display = 'none';
+        startBtn.disabled = false;
+        const inviteRoom = new URLSearchParams(location.search).get('room');
+        if (selectedMode === 'call' && inviteRoom) joinRoomFromInvite(inviteRoom);
+      } catch (err) {
+        console.error("Camera access error:", err);
+        cameraErrorEl.style.display = 'block';
+        startBtn.disabled = true;
+      }
+    }
+
+    function stopCamera() {
+      if (activeCall) { activeCall.close(); activeCall = null; }
+      if (callPeer) { callPeer.destroy(); callPeer = null; }
+      remoteVideo.srcObject = null;
+      remoteVideo.style.display = 'none';
+      document.getElementById('remoteLabel').style.display = 'none';
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+    }
+
+    function setFilter(filterClass, btn) {
+      currentFilter = filterClass;
+      video.className = filterClass;
+      remoteVideo.className = 'remote-video ' + filterClass;
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Capture & Photobooth Logic
+    async function startPhotoboothSession() {
+      cancelActiveSession();
+      const myToken = ++sessionToken;
+      sessionActive = true;
+
+      startBtn.disabled = true;
+      hideExportButtons();
+      capturedImages.length = 0;
+      burstFrames.length = 0;
+      placedStickers.length = 0;
+      recordedChunks = [];
+      livePhotoBlob = null;
+
+      renderBlankStrip();
+      const shots = getShotCount();
+      setupShotProgress(shots);
+
+      // Start Recording Live Video Stream during photoshoot
+      startLiveRecording();
+
+      for (let i = 0; i < shots; i++) {
+        if (myToken !== sessionToken) return; // session was cancelled — bail out immediately
+        updateShotProgress(i);
+        await runCountdown(countdownDuration, myToken);
+        if (myToken !== sessionToken) return;
+        triggerFlash();
+        await capturePhotoWithBurst(myToken);
+        if (myToken !== sessionToken) return;
+        renderStrip();
+        if (i < shots - 1) await new Promise(res => setTimeout(res, 800));
+        if (myToken !== sessionToken) return;
+      }
+
+      if (myToken !== sessionToken) return;
+      updateShotProgress(shots);
+      stopLiveRecording();
+      startBtn.disabled = false;
+      sessionActive = false;
+      showExportButtons();
+    }
+
+    function setupShotProgress(shots) {
+      shotProgressEl.innerHTML = '';
+      for (let i = 0; i < shots; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        shotProgressEl.appendChild(dot);
+      }
+    }
+
+    function updateShotProgress(currentIndex) {
+      const dots = shotProgressEl.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.remove('current', 'done');
+        if (idx < currentIndex) dot.classList.add('done');
+        else if (idx === currentIndex) dot.classList.add('current');
+      });
+    }
+
+    function runCountdown(seconds, myToken) {
+      return new Promise((resolve) => {
+        countdownEl.style.display = 'block';
+        let count = seconds;
+        countdownEl.textContent = count;
+
+        const timer = setInterval(() => {
+          if (myToken !== sessionToken) {
+            clearInterval(timer);
+            countdownEl.style.display = 'none';
+            resolve();
+            return;
+          }
+          count--;
+          if (count > 0) {
+            countdownEl.textContent = count;
+          } else {
+            clearInterval(timer);
+            countdownEl.style.display = 'none';
+            resolve();
+          }
+        }, 1000);
+      });
+    }
+
+    function triggerFlash() {
+      flashEl.classList.add('active');
+      setTimeout(() => flashEl.classList.remove('active'), 400);
+    }
+
+    async function capturePhotoWithBurst(myToken) {
+      // Capture standard high-res photo
+      const photoCanvas = createFilteredFrameCanvas();
+      capturedImages.push(photoCanvas);
+
+      // Rapid burst capture (3 mini frames) for GIF animation
+      for (let k = 0; k < 3; k++) {
+        if (myToken !== sessionToken) return;
+        burstFrames.push(createFilteredFrameCanvas());
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+
+    // Kept in sync with the .filter-* CSS classes above, so whatever the
+    // live preview shows is exactly what gets baked into the captured frame.
+    const FILTER_CSS_MAP = {
+      'filter-sepia': 'sepia(0.45) contrast(1.15) brightness(0.95)',
+      'filter-bw': 'grayscale(1) contrast(1.2) brightness(0.9)',
+      'filter-vintage': 'sepia(0.2) saturate(1.3) contrast(1.1) hue-rotate(-10deg)',
+      'filter-normal': 'none',
+      'filter-golden': 'sepia(0.2) saturate(1.5) brightness(1.12) contrast(1.05) hue-rotate(-6deg)',
+      'filter-y2k': 'saturate(1.5) contrast(1.3) brightness(1.05) hue-rotate(4deg)',
+      'filter-moody': 'contrast(1.25) saturate(0.8) brightness(0.85) sepia(0.12) hue-rotate(-6deg)',
+      'filter-dreamy': 'brightness(1.18) contrast(0.88) saturate(1.15) blur(0.4px)',
+      'filter-polaroid': 'contrast(0.85) brightness(1.12) saturate(0.75) sepia(0.12)',
+      'filter-cool': 'saturate(0.9) contrast(1.12) brightness(1.04) hue-rotate(-10deg)'
+    };
+
+    function createFilteredFrameCanvas() {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 720;
+      tempCanvas.height = 540;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      // Mirror horizontally
+      tempCtx.translate(tempCanvas.width, 0);
+      tempCtx.scale(-1, 1);
+
+      // Apply Filter Simulation
+      tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+
+      tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+      if (remoteVideo.srcObject && remoteVideo.readyState >= 2) {
+        tempCtx.save(); tempCtx.setTransform(1,0,0,1,0,0); tempCtx.filter = FILTER_CSS_MAP[currentFilter] || 'none';
+        const x = 452, y = 294, w = 248, h = 186;
+        tempCtx.fillStyle = '#fffdfa'; tempCtx.fillRect(x - 7, y - 7, w + 14, h + 14);
+        tempCtx.translate(x + w, 0); tempCtx.scale(-1, 1); tempCtx.drawImage(remoteVideo, 0, y, w, h); tempCtx.restore();
+      }
+      return tempCanvas;
+    }
+
+    // Dynamic Canvas Renderer based on Selected Layout & Design Options
+    function renderBlankStrip() {
+      setupCanvasDimensions();
+      const tpl = TEMPLATES[currentTemplate];
+      tpl.drawBackground(ctx, canvas.width, canvas.height);
+      drawLayoutGrid(false, tpl);
+      drawHeader(tpl);
+      tpl.drawDecor(ctx, canvas.width, canvas.height);
+      drawFooter(tpl);
+      drawStickers();
+    }
+
+    function renderStrip() {
+      setupCanvasDimensions();
+      const tpl = TEMPLATES[currentTemplate];
+      tpl.drawBackground(ctx, canvas.width, canvas.height);
+      drawLayoutGrid(true, tpl);
+      drawHeader(tpl);
+      tpl.drawDecor(ctx, canvas.width, canvas.height);
+      drawFooter(tpl);
+      drawStickers();
+    }
+
+    function setupCanvasDimensions() {
+      const tpl = TEMPLATES[currentTemplate];
+      const extra = tpl.headerHeight + tpl.footerHeight;
+      if (selectedLayout === '2x2-grid') {
+        canvas.width = 600;
+        canvas.height = 600 + extra;
+      } else if (selectedLayout === 'single') {
+        canvas.width = 500;
+        canvas.height = 350 + extra;
+      } else if (selectedLayout === '4-vertical') {
+        canvas.width = 400;
+        canvas.height = 1260 + extra;
+      } else { // 3-vertical
+        canvas.width = 400;
+        canvas.height = 1010 + extra;
+      }
+    }
+
+    function drawHeader(tpl) {
+      if (tpl.headerHeight > 0 && tpl.drawHeader) {
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric'
+        });
+        const timeStr = today.toLocaleTimeString('en-US', {
+          hour: '2-digit', minute: '2-digit', hour12: false
+        });
+        tpl.drawHeader(ctx, canvas.width, dateStr, timeStr);
+      }
+    }
+
+    function drawLayoutGrid(drawCaptured, tpl) {
+      const padding = tpl.pad;
+      const gap = tpl.gap;
+      const top = tpl.headerHeight + padding;
+      const usableHeight = canvas.height - tpl.headerHeight - tpl.footerHeight - padding * 2;
+      const cellBg = tpl.cellBg(currentTheme);
+
+      if (selectedLayout === '2x2-grid') {
+        const photoWidth = (canvas.width - (padding * 3)) / 2;
+        const photoHeight = (usableHeight - gap) / 2;
+        for (let i = 0; i < 4; i++) {
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          const x = padding + col * (photoWidth + padding);
+          const y = top + row * (photoHeight + gap);
+
+          if (drawCaptured && capturedImages[i]) {
+            drawCoverImage(capturedImages[i], x, y, photoWidth, photoHeight);
+          } else {
+            ctx.fillStyle = cellBg;
+            ctx.fillRect(x, y, photoWidth, photoHeight);
+          }
+        }
+      } else if (selectedLayout === 'single') {
+        const photoWidth = canvas.width - (padding * 2);
+        const photoHeight = usableHeight;
+        const x = padding;
+        const y = top;
+        if (drawCaptured && capturedImages[0]) {
+          drawCoverImage(capturedImages[0], x, y, photoWidth, photoHeight);
+        } else {
+          ctx.fillStyle = cellBg;
+          ctx.fillRect(x, y, photoWidth, photoHeight);
+        }
+      } else { // 3-vertical or 4-vertical
+        const shots = selectedLayout === '4-vertical' ? 4 : 3;
+        const photoWidth = canvas.width - (padding * 2);
+        const photoHeight = (usableHeight - gap * (shots - 1)) / shots;
+
+        for (let i = 0; i < shots; i++) {
+          const y = top + i * (photoHeight + gap);
+          if (drawCaptured && capturedImages[i]) {
+            drawCoverImage(capturedImages[i], padding, y, photoWidth, photoHeight);
+          } else {
+            ctx.fillStyle = cellBg;
+            ctx.fillRect(padding, y, photoWidth, photoHeight);
+          }
+        }
+      }
+    }
+
+    // Helper to draw image scaled with cover logic
+    function drawCoverImage(imgCanvas, x, y, width, height) {
+      const imgRatio = imgCanvas.width / imgCanvas.height;
+      const targetRatio = width / height;
+      let sw, sh, sx, sy;
+
+      if (imgRatio > targetRatio) {
+        sh = imgCanvas.height;
+        sw = sh * targetRatio;
+        sx = (imgCanvas.width - sw) / 2;
+        sy = 0;
+      } else {
+        sw = imgCanvas.width;
+        sh = sw / targetRatio;
+        sx = 0;
+        sy = (imgCanvas.height - sh) / 2;
+      }
+
+      ctx.drawImage(imgCanvas, sx, sy, sw, sh, x, y, width, height);
+    }
+
+    function drawFooter(tpl) {
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('en-US', { 
+        year: '2-digit', month: '2-digit', day: '2-digit' 
+      }).replace(/\//g, ' • ');
+      
+      const timeStr = today.toLocaleTimeString('en-US', { 
+        hour: '2-digit', minute: '2-digit' 
+      });
+
+      tpl.drawFooter(ctx, canvas.width, canvas.height, dateStr, timeStr);
+    }
+
+    // Design Customization Methods (Themes & Emoji Stickers)
+    function setTheme(color) {
+      if (!templateUsesSwatches()) return;
+      currentTheme = color;
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function selectSticker(emoji, btn) {
+      if (activeSticker === emoji) {
+        activeSticker = null;
+        btn.classList.remove('selected');
+      } else {
+        document.querySelectorAll('.btn-sticker').forEach(b => b.classList.remove('selected'));
+        activeSticker = emoji;
+        btn.classList.add('selected');
+      }
+    }
+
+    function handleCanvasClick(event) {
+      if (!activeSticker) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const x = (event.clientX - rect.left) * scaleX;
+      const y = (event.clientY - rect.top) * scaleY;
+
+      placedStickers.push({ emoji: activeSticker, x, y });
+      
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function drawStickers() {
+      ctx.font = '28px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      placedStickers.forEach(s => {
+        ctx.fillText(s.emoji, s.x, s.y);
+      });
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function undoSticker() {
+      placedStickers.pop();
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function clearStickers() {
+      placedStickers = [];
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    // Fun extra: sprinkle a handful of stickers around the strip at once
+    function randomizeStickers() {
+      const palette = ['⭐', '🖤', '☕', '🎞️', '🌸', '⚡', '🍒', '📸', '💫'];
+      const count = 5;
+      const margin = 40;
+      for (let i = 0; i < count; i++) {
+        const emoji = palette[Math.floor(Math.random() * palette.length)];
+        const x = margin + Math.random() * (canvas.width - margin * 2);
+        const y = margin + Math.random() * (canvas.height - margin * 2);
+        placedStickers.push({ emoji, x, y });
+      }
+      if (capturedImages.length > 0) renderStrip();
+      else renderBlankStrip();
+    }
+
+    /* Live Video Stream Recording for Live Photo Feature */
+    function startLiveRecording() {
+      try {
+        const stream = video.srcObject;
+        if (!stream) return;
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        recordedChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          if (recordedChunks.length === 0) return;
+          livePhotoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          liveVideo.src = URL.createObjectURL(livePhotoBlob);
+        };
+        mediaRecorder.start();
+      } catch (e) {
+        console.warn("Live recording not supported on this browser.");
+      }
+    }
+
+    function stopLiveRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      mediaRecorder = null;
+    }
+
+    // Export Actions
+    function showExportButtons() {
+      downloadBtn.style.display = 'flex';
+      gifBtn.style.display = 'flex';
+      shareBtn.style.display = 'flex';
+      if (livePhotoBlob) liveBtn.style.display = 'flex';
+      printBtn.style.display = 'flex';
+      customPanel.style.display = 'flex';
+      livePhotoContainer.style.display = livePhotoBlob ? 'block' : 'none';
+    }
+
+    function hideExportButtons() {
+      downloadBtn.style.display = 'none';
+      gifBtn.style.display = 'none';
+      shareBtn.style.display = 'none';
+      liveBtn.style.display = 'none';
+      printBtn.style.display = 'none';
+      livePhotoContainer.style.display = 'none';
+      customPanel.style.display = 'none';
+    }
+
+    function downloadStrip() {
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `photostrip-${Date.now()}.png`;
+        link.href = url; link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }, 'image/png');
+    }
+
+    async function shareStrip() {
+      canvas.toBlob(async blob => {
+        if (!blob) return;
+        const file = new File([blob], 'analog-studio-photostrip.png', {type:'image/png'});
+        try {
+          if (navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:'Our Analog Studio photostrip'});
+          else { downloadStrip(); alert('Your browser saved the strip. Attach the PNG to your chat to share it.'); }
+        } catch (error) { if (error.name !== 'AbortError') downloadStrip(); }
+      }, 'image/png');
+    }
+
+    // Encode a real compact GIF with a 3-3-2 color palette for a quick download.
+    function downloadGif() {
+      if (!burstFrames.length || typeof GifWriter === 'undefined') { alert('The GIF encoder could not load. Check your connection and try again.'); return; }
+      const width = 320, height = 240, palette = [];
+      for (let i = 0; i < 256; i++) {
+        const r = (i >> 5) & 7, g = (i >> 2) & 7, b = i & 3;
+        palette.push((Math.round(r * 255 / 7) << 16) | (Math.round(g * 255 / 7) << 8) | Math.round(b * 255 / 3));
+      }
+      const buffer = new Uint8Array(width * height * burstFrames.length * 2 + 65536);
+      const writer = new GifWriter(buffer, width, height, {loop:0, palette});
+      const frameCanvas = document.createElement('canvas'); frameCanvas.width = width; frameCanvas.height = height;
+      const g = frameCanvas.getContext('2d', {willReadFrequently:true});
+      for (const frame of burstFrames) {
+        g.clearRect(0, 0, width, height); g.drawImage(frame, 0, 0, width, height);
+        const rgba = g.getImageData(0, 0, width, height).data, indexed = new Uint8Array(width * height);
+        for (let p = 0, q = 0; p < rgba.length; p += 4, q++) indexed[q] = (rgba[p] >> 5 << 5) | (rgba[p + 1] >> 5 << 2) | (rgba[p + 2] >> 6);
+        writer.addFrame(0, 0, width, height, indexed, {delay:140, disposal:2});
+      }
+      const length = writer.end(), blob = new Blob([buffer.subarray(0, length)], {type:'image/gif'});
+      const url = URL.createObjectURL(blob), link = document.createElement('a');
+      link.download = `photobooth-animation-${Date.now()}.gif`; link.href = url; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    function downloadLivePhoto() {
+      if (!livePhotoBlob) return;
+      const link = document.createElement('a');
+      link.download = `live-photo-${Date.now()}.webm`;
+      link.href = URL.createObjectURL(livePhotoBlob);
+      link.click();
+    }
+
+    function printStrip() {
+      window.print();
+    }
+
+
+    function setRoomStatus(message) { document.getElementById('roomStatus').textContent = message; }
+    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video ' + currentFilter; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
+    function createRoom() {
+      if (!video.srcObject) { setRoomStatus('Turn on your camera first.'); return; }
+      if (typeof Peer === 'undefined') { setRoomStatus('Call service did not load. Check your connection.'); return; }
+      const id = 'analog-' + Math.random().toString(36).slice(2, 9); setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
+      callPeer.on('open', () => { const invite = new URL(location.href); invite.searchParams.set('room', id); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; setRoomStatus('Room ready. Copy the invite and send it to your friend.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Send it to your friend!')).catch(() => {}); });
+      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => setRoomStatus('Your friend left the booth.')); });
+      callPeer.on('error', error => setRoomStatus(error.type === 'unavailable-id' ? 'Could not open the room. Create another invite.' : 'Call connection error. Try again.'));
+    }
+    async function copyInvite() { try { await navigator.clipboard.writeText(document.getElementById('roomHint').textContent); setRoomStatus('Invite copied — paste it into your chat.'); } catch (_) { setRoomStatus('Select and copy the invite link above.'); } }
+    function joinRoomFromInvite(id) {
+      if (!id || typeof Peer === 'undefined' || !video.srcObject) return;
+      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } });
+      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); }); setRoomStatus('Joining your friend’s booth…');
+    }
+
+    // Initial Load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSwatchAvailability();
+      const inviteRoom = new URLSearchParams(location.search).get('room');
+      if (inviteRoom) { selectedMode = 'call'; const card = Array.from(document.querySelectorAll('.mode-card')).find(item => item.textContent.includes('Video call booth')); if (card) selectMode('call', card); document.getElementById('roomHint').textContent = 'You opened an invite. Enter the booth to join your friend.'; }
+      renderBlankStrip();
+    });
+  </script>
+</body>
+</html>
