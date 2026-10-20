@@ -1206,6 +1206,9 @@
     function stopCamera() {
       if (activeCall) { activeCall.close(); activeCall = null; }
       if (callPeer) { callPeer.destroy(); callPeer = null; }
+      roomDataConnection = null;
+      pendingStripShare = false;
+      incomingStripTransfers.clear();
       remoteVideo.srcObject = null;
       remoteVideo.style.display = 'none';
       document.getElementById('remoteLabel').style.display = 'none';
@@ -1786,13 +1789,17 @@
     }
 
     function shareStripWithRoom() {
-      if (selectedMode !== 'call') return;
+      if (selectedMode !== 'call' || !callPeer) return;
       if (!roomDataConnection || !roomDataConnection.open) {
         pendingStripShare = true;
         setRoomStatus('Photostrip ready. It will send as soon as your friend connects.');
         return;
       }
-      canvas.toBlob(blob => {
+      const stripSnapshot = document.createElement('canvas');
+      stripSnapshot.width = canvas.width;
+      stripSnapshot.height = canvas.height;
+      stripSnapshot.getContext('2d').drawImage(canvas, 0, 0);
+      stripSnapshot.toBlob(blob => {
         if (!blob || !roomDataConnection || !roomDataConnection.open) return;
         const reader = new FileReader();
         reader.onload = async () => {
