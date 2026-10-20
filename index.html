@@ -568,8 +568,21 @@
     .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mode-card{display:flex;align-items:center;text-align:left;gap:12px;padding:13px 14px;min-height:68px;border:1px solid #d8d5ca;background:#f6f4ed;color:var(--text-color);border-radius:3px;transition:.18s}.mode-card:hover,.mode-card.selected{border-color:#68724f;background:#eef0e8;box-shadow:inset 0 0 0 1px #68724f}.mode-symbol{font-size:21px;color:#68724f}.mode-card strong,.mode-card small{display:block}.mode-card strong{font:600 12px 'DM Sans',sans-serif}.mode-card small{font:10px 'DM Sans',sans-serif;color:#77796f;margin-top:3px}
     .room-controls{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px;border:1px solid #d8d5ca;background:#f4f3ed;border-radius:3px}.room-controls strong,.room-controls small{display:block}.room-controls strong{font-size:12px}.room-controls small{font-size:10px;color:#77796f;margin-top:4px;overflow-wrap:anywhere}.btn-room{border:0;background:#68724f;color:white;padding:10px 12px;border-radius:2px;font:9px var(--font-mono);letter-spacing:.04em}.btn-room.secondary{background:transparent;color:#68724f;border:1px solid #bdc2b0}.room-status{grid-column:1/-1;font:10px var(--font-mono);color:#68724f;min-height:12px}.room-qr-panel{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px;background:#fffefa;border:1px solid #e3e0d7}.room-qr-code{width:132px;height:132px;flex:0 0 132px;display:grid;place-items:center;background:white}.room-qr-code img,.room-qr-code canvas{display:block;max-width:100%;height:auto}.room-qr-copy{font:10px var(--font-mono);line-height:1.6;color:#68724f;letter-spacing:.04em}.lens-selector{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.lens-label{font:9px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:#77796f;margin-right:4px}.lens-effect-note{font:9px 'DM Sans',sans-serif;color:#77796f;margin:0}.lens-preview{display:none;position:absolute;inset:0;width:100%;height:100%;max-width:none!important;max-height:none!important;object-fit:cover;z-index:1;cursor:default}.camera-container.lens-active #lensPreview{display:block}.camera-container.lens-active #webcam{visibility:hidden}.camera-container.lens-active .remote-video,.camera-container.lens-active .remote-label{display:none!important}
     .remote-video{position:absolute;right:12px;bottom:12px;width:30%;height:auto;aspect-ratio:4/3;object-fit:cover;border:2px solid #fff;box-shadow:0 4px 16px #0006;transform:scaleX(-1);z-index:4}.remote-label{position:absolute;right:12px;bottom:calc(12px + 23%);z-index:5;background:#252820dd;color:white;padding:4px 6px;font:8px var(--font-mono);letter-spacing:.06em}
+    .ready-panel,.retake-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid #d8d5ca;background:#f4f3ed;border-radius:3px}
+    .ready-copy,.retake-controls>div:first-child{display:grid;gap:4px;min-width:0}
+    .ready-copy strong,.retake-controls strong{font:600 12px 'DM Sans',sans-serif;color:#252820}
+    .ready-copy span,.retake-controls p{margin:0;font:11px/1.4 'DM Sans',sans-serif;color:#5f6259}
+    .ready-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+    .ready-actions>span{font:11px var(--font-mono);color:#68724f;white-space:nowrap}
+    .ready-actions .btn-room{min-height:44px}
+    .btn-room:disabled,.btn-mini:disabled{opacity:.55;cursor:not-allowed}
+    .retake-controls{align-items:flex-start;flex-direction:column;background:#f8f7f2}
+    .retake-buttons{display:flex;flex-wrap:wrap;gap:7px;width:100%}
+    .retake-buttons .btn-mini{min-height:44px;padding:8px 11px}
+    .retake-buttons .btn-mini.selected{background:#e9ece2;border-color:#9ba28a;color:#252820}
+    .setup-print-footer{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     @media(max-width:800px){.studio-container{grid-template-columns:1fr}.preview-card{display:grid;grid-template-columns:minmax(160px,.7fr) minmax(240px,1fr);align-items:center}.photostrip-wrapper{grid-row:span 2;justify-self:center}.export-buttons,.custom-panel{grid-column:2}.remote-video{width:27%}}
-    @media(max-width:560px){body{padding:15px 12px}.studio-container{gap:12px}.preview-card{display:flex}.mode-grid{grid-template-columns:1fr}.room-controls{grid-template-columns:1fr 1fr}.room-controls>div,.room-status{grid-column:1/-1}.btn-room{min-height:38px}.remote-video{width:34%}.filter-selector{gap:5px}}
+    @media(max-width:560px){body{padding:15px 12px}.studio-container{gap:12px}.preview-card{display:flex}.mode-grid{grid-template-columns:1fr}.room-controls{grid-template-columns:1fr 1fr}.room-controls>div,.room-status{grid-column:1/-1}.ready-panel{align-items:stretch;flex-direction:column}.ready-actions{justify-content:space-between}.btn-room{min-height:38px}.remote-video{width:34%}.filter-selector{gap:5px}}
 
   
     /* Keep navigation clear of the studio title and align the editor tools. */
@@ -654,15 +667,22 @@
     #landingView .btn-start-session:hover{background:#596344;transform:translateY(-1px)}
     #landingView .btn-start-session span{font-size:20px;font-weight:400}
     #landingView .setup-start-wrap p{margin:8px 0 0;font:12px/1.45 'DM Sans',Arial,sans-serif;color:#62645c}
+    #landingView .strip-details-fields{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:end}
+    #landingView .strip-details-fields label{display:block;margin-bottom:6px;font:12px/1.4 'DM Sans',Arial,sans-serif;color:#4f514a}
+    #landingView .strip-details-input{width:100%;min-height:44px;padding:9px 11px;border:1px solid #c9c8bd;border-radius:5px;background:#fbfaf6;color:#252820;font:14px 'DM Sans',Arial,sans-serif}
+    #landingView .strip-details-input:focus-visible{outline:2px solid #68724f;outline-offset:2px}
+    #landingView .strip-date-choice{display:flex;align-items:center;gap:8px;min-height:44px;margin:0;white-space:nowrap;font:12px/1.35 'DM Sans',Arial,sans-serif;color:#4f514a}
+    #landingView .strip-date-choice input{width:16px;height:16px;accent-color:#68724f}
     #landingView .setup-preview-panel{position:sticky;top:22px;display:flex;flex-direction:column;gap:15px;padding:17px;background:#e9e7dd;border-radius:10px}
     #landingView .preview-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
     #landingView .preview-panel-heading p{margin-top:2px;text-align:left}
     #landingView .preview-live-mark{width:8px;height:8px;border-radius:50%;background:#68724f;flex:0 0 8px}
     #landingView .setup-print{width:208px;min-height:304px;aspect-ratio:.68;margin:1px auto 0;padding:9px;background:#fffefa;color:#574d3f;border:1px solid #d3ccbd;border-radius:2px;transition:background-color .18s,color .18s}
     #landingView .setup-print-frame{height:100%;min-height:284px;display:flex;flex-direction:column;gap:7px;padding:9px;border:1px solid currentColor}
-    #landingView .setup-print-brand,#landingView .setup-print-footer{flex:0 0 auto;text-align:center;font:600 8px/1.3 'DM Sans',Arial,sans-serif;letter-spacing:.12em}
+    #landingView .setup-print-brand,#landingView .setup-print-footer,#landingView .setup-print-date{flex:0 0 auto;text-align:center;font:600 8px/1.3 'DM Sans',Arial,sans-serif;letter-spacing:.12em}
     #landingView .setup-print-brand{padding-bottom:3px}
     #landingView .setup-print-footer{padding-top:3px;letter-spacing:.08em}
+    #landingView .setup-print-date{font-size:7px;letter-spacing:.04em;color:#686a62}
     #landingView .setup-preview-frames{flex:1;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(35px,1fr));gap:5px}
     #landingView .setup-preview-shot{display:grid;place-items:center;min-width:0;min-height:0;background:#e4e1d8;color:#77766e;overflow:hidden}
     #landingView .setup-preview-shot span{font:11px/1 'DM Sans',Arial,sans-serif}
@@ -693,7 +713,7 @@
     #landingView .preview-call-note{margin:0;font:12px/1.45 'DM Sans',Arial,sans-serif;color:#5f6259}
     @media(max-width:980px){#landingView .setup-grid{grid-template-columns:minmax(0,1fr) 270px;gap:24px}#landingView .layout-options{grid-template-columns:repeat(2,minmax(0,1fr))}#landingView .setup-preview-panel{top:14px}}
     @media(max-width:760px){#landingView .setup-grid{grid-template-columns:1fr}#landingView .setup-preview-panel{position:static;grid-row:auto;max-width:460px;width:100%;margin:0 auto 6px}#landingView .setup-controls{gap:21px}#landingView .layout-options{grid-template-columns:repeat(4,minmax(0,1fr))}}
-    @media(max-width:560px){header h1{font-size:22px}.brand-mark{width:22px;height:22px;flex-basis:22px}#landingView .setup-heading h2{font-size:24px}#landingView .setup-heading p{font-size:13px}#landingView .setup-section-heading{display:block}#landingView .setup-section-heading p{margin-top:3px;text-align:left}#landingView .layout-options{grid-template-columns:repeat(2,minmax(0,1fr))}#landingView .template-options{grid-template-columns:repeat(3,minmax(0,1fr))}#landingView .option-card{min-height:88px;padding:9px 5px}#landingView .option-card .label{font-size:12px}#landingView .option-card .sublabel{font-size:11px}#landingView .setup-preview-panel{padding:14px}#landingView .setup-print{width:194px;min-height:290px}}
+    @media(max-width:560px){header h1{font-size:22px}.brand-mark{width:22px;height:22px;flex-basis:22px}#landingView .setup-heading h2{font-size:24px}#landingView .setup-heading p{font-size:13px}#landingView .setup-section-heading{display:block}#landingView .setup-section-heading p{margin-top:3px;text-align:left}#landingView .layout-options{grid-template-columns:repeat(2,minmax(0,1fr))}#landingView .template-options{grid-template-columns:repeat(3,minmax(0,1fr))}#landingView .option-card{min-height:88px;padding:9px 5px}#landingView .option-card .label{font-size:12px}#landingView .option-card .sublabel{font-size:11px}#landingView .setup-preview-panel{padding:14px}#landingView .setup-print{width:194px;min-height:290px}#landingView .strip-details-fields{grid-template-columns:1fr;gap:9px}#landingView .strip-date-choice{min-height:32px}}
     @media(prefers-reduced-motion:reduce){#landingView .option-card,#landingView .mode-card,#landingView .btn-start-session,#landingView .setup-print{transition:none}#landingView .option-card:hover,#landingView .btn-start-session:hover{transform:none}}
 
   </style>
@@ -776,6 +796,14 @@
             </div>
           </section>
 
+          <section class="setup-section" aria-labelledby="stripDetailsHeading">
+            <div class="setup-section-heading"><h3 id="stripDetailsHeading">Strip details</h3><p>Add an event name and date</p></div>
+            <div class="strip-details-fields">
+              <div><label for="eventCaptionInput">Event name or caption</label><input id="eventCaptionInput" class="strip-details-input" type="text" maxlength="34" placeholder="e.g. Maya’s birthday" autocomplete="off" oninput="updateStripDetails()"></div>
+              <label class="strip-date-choice" for="includeDateInput"><input id="includeDateInput" type="checkbox" checked onchange="updateStripDetails()"> Include date and time</label>
+            </div>
+          </section>
+
           <div class="setup-start-wrap">
             <button id="setupStartButton" class="btn-start-session" onclick="enterStudio()">Enter the booth <span aria-hidden="true">→</span></button>
             <p id="setupStartNote">Camera access is requested when you enter. Filters are in the studio.</p>
@@ -788,12 +816,13 @@
             <div class="setup-print-frame">
               <div class="setup-print-brand">ANALOG STUDIO</div>
               <div id="setupPreviewFrames" class="setup-preview-frames" aria-hidden="true"></div>
-              <div class="setup-print-footer">KEEP THIS MOMENT</div>
+              <div id="setupPrintFooter" class="setup-print-footer">KEEP THIS MOMENT</div>
+              <div id="setupPrintDate" class="setup-print-date"></div>
             </div>
           </div>
           <div class="preview-meta"><strong id="previewTemplateName">Classic</strong><span id="previewLayoutName">1 × 3 strip · 3 photos</span></div>
           <div class="preview-session"><span>Your session</span><strong id="previewSessionDescription">Just me · 5 seconds</strong></div>
-          <p id="previewCallNote" class="preview-call-note">For a video call, your guest sees the same countdown.</p>
+          <p id="previewCallNote" class="preview-call-note">Both people mark themselves ready; the host starts a synced strip.</p>
         </aside>
       </div>
     </div>
@@ -850,6 +879,10 @@
             <div id="roomQrPanel" class="room-qr-panel" style="display:none"><div id="roomQrCode" class="room-qr-code" role="img" aria-label="QR code for the photobooth invite"></div><div class="room-qr-copy">SCAN TO JOIN<br>Point your phone camera here to open this booth invite.</div></div>
             <span id="roomStatus" class="room-status" aria-live="polite"></span>
           </div>
+          <div id="readyPanel" class="ready-panel" style="display:none" aria-live="polite">
+            <div class="ready-copy"><strong>Two-person ready check</strong><span id="readyMessage">Waiting for your friend to join</span></div>
+            <div class="ready-actions"><span id="readyCount">0 / 2 ready</span><button id="readyToggleBtn" class="btn-room secondary" type="button" onclick="toggleReady()" disabled>I’M READY</button></div>
+          </div>
           <button id="startBtn" class="btn-capture" onclick="startPhotoboothSession()">START AUTOMATIC PHOTO STRIP</button>
         </div>
       </div>
@@ -861,6 +894,10 @@
         </div>
         <button id="viewStripBtn" class="view-strip-btn" style="display:none" onclick="openStripViewer()">⤢ VIEW STRIP LARGER</button>
         <p id="sharedStripStatus" role="status" style="display:none;text-align:center;color:#68724f;font:10px var(--font-mono);letter-spacing:.04em"></p>
+        <div id="retakeControls" class="retake-controls" style="display:none">
+          <div><strong>Want another take?</strong><p id="retakeHint">Retake one frame without starting the whole strip again.</p></div>
+          <div id="retakeButtons" class="retake-buttons"></div>
+        </div>
 
         <!-- Design Customization Panel -->
         <div id="customPanel" class="custom-panel" style="display: none;">
@@ -938,6 +975,9 @@
     let callPeer = null;
     let activeCall = null;
     let roomId = null;
+    let isRoomHost = false;
+    let localReady = false;
+    let remoteReady = false;
     let roomDataConnection = null;
     let pendingStripShare = false;
     let sharedStripImage = null;
@@ -952,6 +992,9 @@
     let currentTheme = '#FFFDF2';
     let currentTemplate = 'classic';
     let countdownDuration = 5;
+    let customCaption = '';
+    let includeDateOnStrip = true;
+    let stripTimestamp = new Date();
     let activeSticker = null;
     let placedStickers = []; // Array of { emoji, x, y }
 
@@ -965,6 +1008,7 @@
     let sessionActive = false;
     let activeCountdownId = null;
     let remoteCountdownId = null;
+    const pendingRemoteRetakes = [];
     
     // Elements
     const video = document.getElementById('webcam');
@@ -1029,15 +1073,17 @@
           c.fillStyle = isDarkColor(currentTheme) ? '#B9AD9D' : '#8E806C';
           for (let y = 66; y < h - 24; y += 30) { c.fillRect(15, y, 8, 13); c.fillRect(w - 23, y, 8, 13); }
         },
-        drawFooter(c, w, h, dateStr, timeStr) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption, showDate) {
           const dark = isDarkColor(currentTheme);
           c.fillStyle = dark ? '#FFFDF2' : '#8B4513';
           c.font = 'bold 20px "Courier Prime", monospace';
           c.textAlign = 'center';
-          c.fillText('KEEP THIS MOMENT', w / 2, h - 68);
-          c.fillStyle = dark ? '#A09080' : '#A08E7D';
-          c.font = '14px "Courier Prime", monospace';
-          c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 42);
+          c.fillText(eventCaption || 'KEEP THIS MOMENT', w / 2, h - 68, w - 32);
+          if (showDate) {
+            c.fillStyle = dark ? '#A09080' : '#A08E7D';
+            c.font = '14px "Courier Prime", monospace';
+            c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 42, w - 32);
+          }
         }
       },
       cinema: {
@@ -1079,7 +1125,7 @@
           c.fillText('🎟️', 34, h - 150);
           c.fillText('🎞️', w - 34, h - 150);
         },
-        drawFooter(c, w, h) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption, showDate) {
           const barH = 96;
           const barY = h - barH;
           c.fillStyle = '#B5342A';
@@ -1087,9 +1133,9 @@
           c.fillStyle = '#FBEDE8';
           c.font = 'italic bold 30px "Playfair Display", serif';
           c.textAlign = 'center';
-          c.fillText('CINEMA', w / 2, barY + 44);
+          c.fillText(eventCaption || 'CINEMA', w / 2, barY + 44, w - 36);
           c.font = '13px "Courier Prime", monospace';
-          c.fillText("★ ADMIT ONE — TONIGHT'S FEATURE ★", w / 2, barY + 70);
+          c.fillText(showDate ? `${dateStr}  •  ${timeStr}` : "★ ADMIT ONE — TONIGHT'S FEATURE ★", w / 2, barY + 70, w - 30);
         }
       },
       cute: {
@@ -1118,14 +1164,14 @@
           ];
           spots.forEach(([emoji, x, y]) => c.fillText(emoji, x, y));
         },
-        drawFooter(c, w, h) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption, showDate) {
           c.textAlign = 'center';
           c.fillStyle = '#4E6E96';
           c.font = 'bold 42px "Caveat", cursive';
-          c.fillText('SUPER CUTE', w / 2, h - 70);
+          c.fillText(eventCaption || 'SUPER CUTE', w / 2, h - 70, w - 30);
           c.font = '16px "Caveat", cursive';
           c.fillStyle = '#7C93B3';
-          c.fillText('@analogstudio', w / 2, h - 42);
+          c.fillText(showDate ? `${dateStr}  •  ${timeStr}` : '@analogstudio', w / 2, h - 42, w - 28);
           c.font = '20px serif';
           c.fillText('🌸  ⭐  🌸', w / 2, h - 18);
         }
@@ -1144,20 +1190,20 @@
           c.fillRect(0, 0, w, h);
         },
         drawDecor() { /* clean, no decoration */ },
-        drawHeader(c, w, dateStr, timeStr) {
+        drawHeader(c, w, dateStr, timeStr, eventCaption, showDate) {
           c.textAlign = 'center';
           c.fillStyle = '#1A1A1A';
           c.font = '20px "Courier Prime", monospace';
-          c.fillText(dateStr, w / 2, 46);
+          if (showDate) c.fillText(dateStr, w / 2, 46, w - 28);
           c.font = 'bold 54px "Courier Prime", monospace';
           c.fillText(timeStr, w / 2, 104);
         },
-        drawFooter(c, w, h) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption) {
           const barY = h - 110;
           c.textAlign = 'center';
           c.fillStyle = '#8A8A8A';
           c.font = '13px "Courier Prime", monospace';
-          c.fillText('Now playing', w / 2, barY + 22);
+          c.fillText(eventCaption || 'Now playing', w / 2, barY + 22, w - 36);
 
           // progress line
           const lineY = barY + 46;
@@ -1201,10 +1247,10 @@
           c.fillStyle = '#4B4030';
           for (let y = 74; y < h - 54; y += 30) { c.fillRect(21, y, 12, 18); c.fillRect(w - 33, y, 12, 18); }
         },
-        drawFooter(c, w, h, dateStr, timeStr) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption, showDate) {
           c.textAlign = 'center'; c.fillStyle = '#4B4030'; c.font = 'bold 17px "Courier Prime", monospace';
-          c.fillText('KEEP THIS MOMENT', w / 2, h - 56);
-          c.font = '12px "Courier Prime", monospace'; c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 32);
+          c.fillText(eventCaption || 'KEEP THIS MOMENT', w / 2, h - 56, w - 38);
+          if (showDate) { c.font = '12px "Courier Prime", monospace'; c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 32, w - 36); }
         }
       },
       midnight: {
@@ -1223,11 +1269,10 @@
           c.fillStyle = '#C4CBD8'; c.font = '20px serif'; c.textAlign = 'center';
           c.fillText('✦', 24, 28); c.fillText('✦', w - 24, h - 26);
         },
-        drawFooter(c, w, h, dateStr, timeStr) {
+        drawFooter(c, w, h, dateStr, timeStr, eventCaption, showDate) {
           c.textAlign = 'center'; c.fillStyle = '#F3F0EA'; c.font = 'bold 22px "Playfair Display", serif';
-          c.fillText('MIDNIGHT MEMORIES', w / 2, h - 52);
-          c.fillStyle = '#A9AEBA'; c.font = '11px "Courier Prime", monospace';
-          c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 28);
+          c.fillText(eventCaption || 'MIDNIGHT MEMORIES', w / 2, h - 52, w - 34);
+          if (showDate) { c.fillStyle = '#A9AEBA'; c.font = '11px "Courier Prime", monospace'; c.fillText(`${dateStr}  •  ${timeStr}`, w / 2, h - 28, w - 34); }
         }
       }
     };
@@ -1312,6 +1357,10 @@
       livePhotoContainer.style.display = 'none';
       shotProgressEl.innerHTML = '';
       startBtn.disabled = false;
+      document.getElementById('retakeControls').style.display = 'none';
+      pendingRemoteRetakes.length = 0;
+      localReady = false;
+      remoteReady = false;
       hideExportButtons();
       document.querySelectorAll('.btn-sticker').forEach(b => b.classList.remove('selected'));
       renderBlankStrip();
@@ -1401,9 +1450,63 @@
       document.getElementById('previewLayoutName').textContent = `${layouts[selectedLayout] || layouts['3-vertical']} · ${shotCount} ${shotCount === 1 ? 'photo' : 'photos'}`;
       document.getElementById('previewSessionDescription').textContent = `${selectedMode === 'call' ? 'Video call' : 'Just me'} · ${countdownDuration} seconds`;
       document.getElementById('previewCallNote').hidden = selectedMode !== 'call';
+      document.getElementById('setupPrintFooter').textContent = customCaption || getDefaultCaption();
+      const previewDate = document.getElementById('setupPrintDate');
+      previewDate.textContent = includeDateOnStrip ? stripTimestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+      previewDate.hidden = !includeDateOnStrip;
       document.getElementById('timerHelp').textContent = selectedMode === 'call'
-        ? 'Your guest sees this countdown too'
+        ? 'Both people mark ready; the host starts the synced strip'
         : 'A little time to get ready for each shot';
+    }
+
+    function getDefaultCaption() {
+      return ({
+        classic: 'KEEP THIS MOMENT', cinema: 'CINEMA', cute: 'SUPER CUTE',
+        lockscreen: 'Now playing', retro: 'KEEP THIS MOMENT', midnight: 'MIDNIGHT MEMORIES'
+      })[currentTemplate] || 'KEEP THIS MOMENT';
+    }
+
+    function updateStripDetails() {
+      customCaption = document.getElementById('eventCaptionInput').value.trim().slice(0, 34);
+      includeDateOnStrip = document.getElementById('includeDateInput').checked;
+      stripTimestamp = new Date();
+      updateSetupPreview();
+      updateInvitePreferences();
+      if (capturedImages.length) renderStrip();
+      else renderBlankStrip();
+    }
+
+    function updateReadyUi() {
+      const panel = document.getElementById('readyPanel');
+      const readyButton = document.getElementById('readyToggleBtn');
+      const readyMessage = document.getElementById('readyMessage');
+      const readyCount = document.getElementById('readyCount');
+      if (!panel || !readyButton) return;
+      const inCallMode = selectedMode === 'call';
+      panel.style.display = inCallMode ? 'flex' : 'none';
+      const connected = Boolean(roomDataConnection && roomDataConnection.open && remoteVideo.srcObject);
+      readyButton.disabled = !connected || sessionActive;
+      readyButton.textContent = localReady ? 'READY ✓' : 'I’M READY';
+      readyButton.classList.toggle('selected', localReady);
+      readyCount.textContent = `${Number(localReady) + Number(remoteReady)} / 2 ready`;
+      if (!connected) readyMessage.textContent = 'Waiting for your friend to join';
+      else if (sessionActive) readyMessage.textContent = 'Your photo strip is in progress';
+      else if (!localReady && !remoteReady) readyMessage.textContent = 'Tap ready when both of you are in position';
+      else if (localReady && remoteReady) readyMessage.textContent = isRoomHost ? 'You’re both ready. Start the strip when you are.' : 'You’re both ready. The host will start the strip.';
+      else readyMessage.textContent = remoteReady ? 'Your friend is ready. Tap when you are.' : 'Waiting for your friend to get ready';
+
+      if (inCallMode) {
+        startBtn.disabled = !connected || !isRoomHost || !localReady || !remoteReady || sessionActive;
+        startBtn.textContent = !isRoomHost ? 'WAITING FOR HOST TO START' : (localReady && remoteReady ? 'START OUR PHOTO STRIP' : 'WAITING FOR BOTH PEOPLE TO BE READY');
+      }
+    }
+
+    function toggleReady() {
+      if (!roomDataConnection || !roomDataConnection.open || sessionActive) return;
+      localReady = !localReady;
+      try { roomDataConnection.send({ type: 'booth-ready', ready: localReady }); } catch (_) {}
+      updateReadyUi();
+      setRoomStatus(localReady ? 'You’re ready. Waiting for your friend.' : 'You’re not marked ready yet.');
     }
 
     function enterStudio() {
@@ -1429,6 +1532,8 @@
       updateSwatchAvailability();
       showView('studioView');
       document.getElementById('roomControls').style.display = selectedMode === 'call' ? 'grid' : 'none';
+      startBtn.disabled = true;
+      updateReadyUi();
       initCamera();
       renderBlankStrip();
     }
@@ -1463,7 +1568,9 @@
         video.className = currentFilter;
         await video.play();
         cameraErrorEl.style.display = 'none';
-        startBtn.disabled = false;
+        startBtn.disabled = selectedMode === 'call';
+        if (selectedMode === 'solo') startBtn.disabled = false;
+        updateReadyUi();
         const inviteRoom = new URLSearchParams(location.search).get('room');
         if (selectedMode === 'call' && inviteRoom) joinRoomFromInvite(inviteRoom);
       } catch (err) {
@@ -1533,12 +1640,29 @@
     }
 
     // Capture & Photobooth Logic
-    async function startPhotoboothSession() {
+    async function startPhotoboothSession(options = {}) {
+      const remoteStart = options.remote === true;
+      if (sessionActive || !video.srcObject) return;
+      if (selectedMode === 'call' && (!remoteStart && (!isRoomHost || !localReady || !remoteReady || !roomDataConnection || !roomDataConnection.open))) {
+        updateReadyUi();
+        return;
+      }
       cancelActiveSession();
       const myToken = ++sessionToken;
-      const countdownId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const countdownId = options.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       activeCountdownId = countdownId;
       sessionActive = true;
+      stripTimestamp = new Date();
+
+      if (selectedMode === 'call' && !remoteStart && roomDataConnection && roomDataConnection.open) {
+        try { roomDataConnection.send({ type: 'booth-session-start', id: countdownId }); } catch (_) {}
+      }
+      localReady = false;
+      remoteReady = false;
+      if (selectedMode === 'call' && roomDataConnection && roomDataConnection.open) {
+        try { roomDataConnection.send({ type: 'booth-ready', ready: false }); } catch (_) {}
+      }
+      updateReadyUi();
 
       startBtn.disabled = true;
       hideExportButtons();
@@ -1563,10 +1687,10 @@
       for (let i = 0; i < shots; i++) {
         if (myToken !== sessionToken) return; // session was cancelled — bail out immediately
         updateShotProgress(i);
-        await runCountdown(countdownDuration, myToken, i + 1, shots, countdownId);
+        await runCountdown(countdownDuration, myToken, i + 1, shots, countdownId, !remoteStart && selectedMode === 'call' && isRoomHost);
         if (myToken !== sessionToken) return;
         triggerFlash();
-        await capturePhotoWithBurst(myToken);
+        await capturePhotoWithBurst(myToken, i);
         if (myToken !== sessionToken) return;
         renderStrip();
         if (i < shots - 1) await new Promise(res => setTimeout(res, 800));
@@ -1580,8 +1704,12 @@
       activeCountdownId = null;
       sessionActive = false;
       showExportButtons();
-      shareStripWithRoom();
-      shareGifWithRoom();
+      updateRetakeControls();
+      updateReadyUi();
+      if (selectedMode !== 'call' || isRoomHost) {
+        shareStripWithRoom();
+        shareGifWithRoom();
+      }
       if (queuedSharedStripImage) {
         const receivedImage = queuedSharedStripImage;
         queuedSharedStripImage = null;
@@ -1591,6 +1719,84 @@
         const receivedGif = queuedSharedGifBlob;
         queuedSharedGifBlob = null;
         displaySharedGif(receivedGif);
+      }
+      if (pendingRemoteRetakes.length) {
+        const nextRetake = pendingRemoteRetakes.shift();
+        setTimeout(() => retakeShot(nextRetake, true), 0);
+      }
+    }
+
+    function updateRetakeControls() {
+      const panel = document.getElementById('retakeControls');
+      const buttons = document.getElementById('retakeButtons');
+      const hint = document.getElementById('retakeHint');
+      if (!panel || !buttons) return;
+      buttons.replaceChildren();
+      if (!capturedImages.length || sharedStripImage) {
+        panel.style.display = 'none';
+        return;
+      }
+      panel.style.display = 'flex';
+      hint.textContent = selectedMode === 'call'
+        ? (isRoomHost ? 'Retake one frame and your friend will retake that same moment.' : 'The host can retake a frame for both of you.')
+        : 'Replace one photo without starting the whole strip again.';
+      capturedImages.forEach((photo, index) => {
+        if (!photo) return;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn-mini';
+        button.textContent = `Retake ${index + 1}`;
+        button.disabled = sessionActive || (selectedMode === 'call' && (!isRoomHost || !roomDataConnection || !roomDataConnection.open));
+        button.setAttribute('aria-label', `Retake photo ${index + 1}`);
+        button.addEventListener('click', () => retakeShot(index));
+        buttons.appendChild(button);
+      });
+    }
+
+    async function retakeShot(index, fromRoom = false) {
+      if (!Number.isInteger(index) || index < 0 || index >= capturedImages.length || !capturedImages[index]) return;
+      if (sessionActive) {
+        if (fromRoom) pendingRemoteRetakes.push(index);
+        return;
+      }
+      if (selectedMode === 'call' && !fromRoom && (!isRoomHost || !roomDataConnection || !roomDataConnection.open)) return;
+      if (selectedMode === 'call' && !fromRoom && roomDataConnection && roomDataConnection.open) {
+        try { roomDataConnection.send({ type: 'booth-retake', shotIndex: index }); } catch (_) {}
+      }
+      if (fromRoom) {
+        sharedStripImage = null;
+        receivedSharedStrip = false;
+        queuedSharedStripImage = null;
+      }
+
+      const myToken = ++sessionToken;
+      const countdownId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      activeCountdownId = countdownId;
+      sessionActive = true;
+      startBtn.disabled = true;
+      updateReadyUi();
+      updateRetakeControls();
+      await runCountdown(countdownDuration, myToken, index + 1, capturedImages.length, countdownId, !fromRoom && selectedMode === 'call' && isRoomHost);
+      if (myToken !== sessionToken) return;
+      triggerFlash();
+      await capturePhotoWithBurst(myToken, index, true);
+      if (myToken !== sessionToken) return;
+      renderStrip();
+      activeCountdownId = null;
+      sessionActive = false;
+      updateReadyUi();
+      updateRetakeControls();
+      showExportButtons();
+      if (selectedMode !== 'call' || isRoomHost) shareStripWithRoom();
+      if (selectedMode !== 'call' || isRoomHost) shareGifWithRoom();
+      if (queuedSharedStripImage) {
+        const receivedImage = queuedSharedStripImage;
+        queuedSharedStripImage = null;
+        displaySharedStrip(receivedImage);
+      }
+      if (pendingRemoteRetakes.length) {
+        const nextRetake = pendingRemoteRetakes.shift();
+        setTimeout(() => retakeShot(nextRetake, true), 0);
       }
     }
 
@@ -1612,12 +1818,12 @@
       });
     }
 
-    function runCountdown(seconds, myToken, shotNumber, totalShots, countdownId) {
+    function runCountdown(seconds, myToken, shotNumber, totalShots, countdownId, shouldBroadcast = false) {
       return new Promise((resolve) => {
         countdownEl.style.display = 'block';
         let count = seconds;
         countdownEl.textContent = count;
-        broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
+        if (shouldBroadcast) broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
 
         const timer = setInterval(() => {
           if (myToken !== sessionToken) {
@@ -1629,11 +1835,11 @@
           count--;
           if (count > 0) {
             countdownEl.textContent = count;
-            broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
+            if (shouldBroadcast) broadcastRoomCountdown(count, shotNumber, totalShots, countdownId);
           } else {
             clearInterval(timer);
             countdownEl.style.display = 'none';
-            broadcastRoomCountdown(0, shotNumber, totalShots, countdownId);
+            if (shouldBroadcast) broadcastRoomCountdown(0, shotNumber, totalShots, countdownId);
             resolve();
           }
         }, 1000);
@@ -1669,17 +1875,19 @@
       setTimeout(() => flashEl.classList.remove('active'), 400);
     }
 
-    async function capturePhotoWithBurst(myToken) {
+    async function capturePhotoWithBurst(myToken, shotIndex, replace = false) {
       // Capture standard high-res photo
       const photoCanvas = createFilteredFrameCanvas();
-      capturedImages.push(photoCanvas);
+      capturedImages[shotIndex] = photoCanvas;
 
       // Rapid burst capture (3 mini frames) for GIF animation
+      const shotBurst = [];
       for (let k = 0; k < 3; k++) {
         if (myToken !== sessionToken) return;
-        burstFrames.push(createFilteredFrameCanvas());
+        shotBurst.push(createFilteredFrameCanvas());
         await new Promise(r => setTimeout(r, 100));
       }
+      burstFrames.splice(shotIndex * 3, replace ? 3 : 0, ...shotBurst);
     }
 
     // Kept in sync with the .filter-* CSS classes above, so whatever the
@@ -1830,14 +2038,14 @@
 
     function drawHeader(tpl) {
       if (tpl.headerHeight > 0 && tpl.drawHeader) {
-        const today = new Date();
+        const today = stripTimestamp;
         const dateStr = today.toLocaleDateString('en-US', {
           weekday: 'long', month: 'long', day: 'numeric'
         });
         const timeStr = today.toLocaleTimeString('en-US', {
           hour: '2-digit', minute: '2-digit', hour12: false
         });
-        tpl.drawHeader(ctx, canvas.width, dateStr, timeStr);
+        tpl.drawHeader(ctx, canvas.width, dateStr, timeStr, customCaption, includeDateOnStrip);
       }
     }
 
@@ -1914,7 +2122,7 @@
     }
 
     function drawFooter(tpl) {
-      const today = new Date();
+      const today = stripTimestamp;
       const dateStr = today.toLocaleDateString('en-US', { 
         year: '2-digit', month: '2-digit', day: '2-digit' 
       }).replace(/\//g, ' • ');
@@ -1923,7 +2131,7 @@
         hour: '2-digit', minute: '2-digit' 
       });
 
-      tpl.drawFooter(ctx, canvas.width, canvas.height, dateStr, timeStr);
+      tpl.drawFooter(ctx, canvas.width, canvas.height, dateStr, timeStr, customCaption, includeDateOnStrip);
     }
 
     // Design Customization Methods (Themes & Emoji Stickers)
@@ -2037,6 +2245,7 @@
       customPanel.style.display = 'flex';
       livePhotoContainer.style.display = livePhotoBlob && !receivedSharedStrip ? 'block' : 'none';
       if (receivedSharedStrip) swatchGroup.style.display = 'none';
+      updateRetakeControls();
     }
 
     function hideExportButtons() {
@@ -2046,6 +2255,7 @@
       shareBtn.style.display = 'none';
       liveBtn.style.display = 'none';
       printBtn.style.display = 'none';
+      document.getElementById('retakeControls').style.display = 'none';
       livePhotoContainer.style.display = 'none';
       customPanel.style.display = 'none';
     }
@@ -2136,6 +2346,8 @@
         invite.searchParams.set('filter', currentFilter);
         invite.searchParams.set('effect', currentLensEffect);
         invite.searchParams.set('timer', String(countdownDuration));
+        invite.searchParams.set('caption', customCaption);
+        invite.searchParams.set('showdate', includeDateOnStrip ? '1' : '0');
         hint.textContent = invite.href;
         renderInviteQr(invite.href);
       } catch (_) {}
@@ -2153,7 +2365,7 @@
     function getInviteBaseUrl() {
       return location.hostname === 'zxenju.github.io' ? location.origin + location.pathname : 'https://zxenju.github.io/photobooth/';
     }
-    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video'; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
+    function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video'; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); updateReadyUi(); }
     // The video call carries camera/audio only. A separate reliable data
     // channel sends the finished strip to the other participant.
     const STRIP_CHUNK_SIZE = 48000;
@@ -2162,6 +2374,9 @@
     function attachRoomDataConnection(connection) {
       roomDataConnection = connection;
       connection.on('open', () => {
+        remoteReady = false;
+        try { connection.send({ type: 'booth-ready', ready: localReady }); } catch (_) {}
+        updateReadyUi();
         if (pendingStripShare) {
           pendingStripShare = false;
           shareStripWithRoom();
@@ -2173,13 +2388,35 @@
       });
       connection.on('data', handleRoomDataMessage);
       connection.on('close', () => {
-        if (roomDataConnection === connection) roomDataConnection = null;
+        if (roomDataConnection === connection) {
+          roomDataConnection = null;
+          localReady = false;
+          remoteReady = false;
+          updateReadyUi();
+          updateRetakeControls();
+        }
       });
       connection.on('error', () => setRoomStatus('The photo sharing connection was interrupted.'));
     }
 
     function handleRoomDataMessage(message) {
       if (!message || typeof message !== 'object') return;
+      if (message.type === 'booth-ready' && typeof message.ready === 'boolean') {
+        remoteReady = message.ready;
+        updateReadyUi();
+        return;
+      }
+      if (message.type === 'booth-session-start') {
+        if (isRoomHost || sessionActive || typeof message.id !== 'string' || message.id.length > 80) return;
+        startPhotoboothSession({ remote: true, id: message.id });
+        return;
+      }
+      if (message.type === 'booth-retake') {
+        if (isRoomHost || !Number.isInteger(message.shotIndex) || message.shotIndex < 0 || message.shotIndex > 3) return;
+        if (sessionActive) pendingRemoteRetakes.push(message.shotIndex);
+        else retakeShot(message.shotIndex, true);
+        return;
+      }
       if (message.type === 'booth-countdown') {
         showRoomCountdown(message);
         return;
@@ -2226,8 +2463,6 @@
     function displaySharedStrip(image) {
       sharedStripImage = image;
       receivedSharedStrip = true;
-      capturedImages.length = 0;
-      burstFrames.length = 0;
       placedStickers = [];
       renderStrip();
       sharedStripStatus.textContent = 'Shared photostrip received · download or print your copy';
@@ -2303,16 +2538,18 @@
     function createRoom() {
       if (!video.srcObject) { setRoomStatus('Turn on your camera first.'); return; }
       if (typeof Peer === 'undefined') { setRoomStatus('Call service did not load. Check your connection.'); return; }
+      isRoomHost = true; localReady = false; remoteReady = false;
       const id = 'analog-' + Math.random().toString(36).slice(2, 9); roomId = id; setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
-      callPeer.on('open', () => { const invite = new URL(getInviteBaseUrl()); invite.searchParams.set('room', id); invite.searchParams.set('autojoin', '1'); invite.searchParams.set('layout', selectedLayout); invite.searchParams.set('template', currentTemplate); invite.searchParams.set('filter', currentFilter); invite.searchParams.set('effect', currentLensEffect); invite.searchParams.set('timer', String(countdownDuration)); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; renderInviteQr(invite.href); setRoomStatus('Room ready. Scan the QR code or copy the link to invite someone.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Scan the QR or send the link to your friend!')).catch(() => {}); });
-      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => setRoomStatus('Your friend left the booth.')); });
+      callPeer.on('open', () => { const invite = new URL(getInviteBaseUrl()); invite.searchParams.set('room', id); invite.searchParams.set('autojoin', '1'); invite.searchParams.set('layout', selectedLayout); invite.searchParams.set('template', currentTemplate); invite.searchParams.set('filter', currentFilter); invite.searchParams.set('effect', currentLensEffect); invite.searchParams.set('timer', String(countdownDuration)); invite.searchParams.set('caption', customCaption); invite.searchParams.set('showdate', includeDateOnStrip ? '1' : '0'); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; renderInviteQr(invite.href); setRoomStatus('Room ready. Scan the QR code or copy the link to invite someone.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Scan the QR or send it to your friend!')).catch(() => {}); updateReadyUi(); });
+      callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => { remoteVideo.srcObject = null; localReady = false; remoteReady = false; updateReadyUi(); updateRetakeControls(); setRoomStatus('Your friend left the booth.'); }); });
       callPeer.on('connection', attachRoomDataConnection);
       callPeer.on('error', error => setRoomStatus(error.type === 'unavailable-id' ? 'Could not open the room. Create another invite.' : 'Call connection error. Try again.'));
     }
     async function copyInvite() { try { await navigator.clipboard.writeText(document.getElementById('roomHint').textContent); setRoomStatus('Invite copied — paste it into your chat.'); } catch (_) { setRoomStatus('Select and copy the invite link above.'); } }
     function joinRoomFromInvite(id) {
       if (!id || typeof Peer === 'undefined' || !video.srcObject) return;
-      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } attachRoomDataConnection(callPeer.connect(id, { reliable: true })); });
+      isRoomHost = false; localReady = false; remoteReady = false;
+      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('close', () => { remoteVideo.srcObject = null; localReady = false; remoteReady = false; updateReadyUi(); updateRetakeControls(); setRoomStatus('The room host left the booth.'); }); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } attachRoomDataConnection(callPeer.connect(id, { reliable: true })); });
       callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); }); setRoomStatus('Joining your friend’s booth…');
     }
 
@@ -2320,6 +2557,12 @@
     window.addEventListener('DOMContentLoaded', () => {
       updateSwatchAvailability();
       const inviteParams = new URLSearchParams(location.search);
+      const invitedCaption = inviteParams.get('caption');
+      if (invitedCaption !== null) document.getElementById('eventCaptionInput').value = invitedCaption.slice(0, 34);
+      const invitedDateChoice = inviteParams.get('showdate');
+      if (invitedDateChoice === '0') document.getElementById('includeDateInput').checked = false;
+      customCaption = document.getElementById('eventCaptionInput').value.trim();
+      includeDateOnStrip = document.getElementById('includeDateInput').checked;
       const inviteRoom = inviteParams.get('room');
       if (inviteRoom) {
         selectedMode = 'call';
@@ -2353,4 +2596,3 @@
   </script>
 </body>
 </html>
-
