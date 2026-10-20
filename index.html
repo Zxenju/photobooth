@@ -728,6 +728,7 @@
         <div class="photostrip-wrapper">
           <canvas id="stripCanvas" width="400" height="1100" onclick="handleCanvasClick(event)"></canvas>
         </div>
+        <p id="sharedStripStatus" role="status" style="display:none;text-align:center;color:#68724f;font:10px var(--font-mono);letter-spacing:.04em"></p>
 
         <!-- Design Customization Panel -->
         <div id="customPanel" class="custom-panel" style="display: none;">
@@ -800,6 +801,12 @@
     let callPeer = null;
     let activeCall = null;
     let roomId = null;
+    let roomDataConnection = null;
+    let pendingStripShare = false;
+    let sharedStripImage = null;
+    let queuedSharedStripImage = null;
+    let receivedSharedStrip = false;
+    const incomingStripTransfers = new Map();
     let currentFilter = 'filter-sepia';
     let currentTheme = '#FFFDF2';
     let currentTemplate = 'classic';
@@ -838,6 +845,7 @@
     
     const liveVideo = document.getElementById('liveVideo');
     const livePhotoContainer = document.getElementById('livePhotoContainer');
+    const sharedStripStatus = document.getElementById('sharedStripStatus');
 
     const capturedImages = [];
     const burstFrames = []; // For GIF creation
@@ -1078,6 +1086,13 @@
     function resetStudioState() {
       capturedImages.length = 0;
       burstFrames.length = 0;
+      sharedStripImage = null;
+      queuedSharedStripImage = null;
+      receivedSharedStrip = false;
+      pendingStripShare = false;
+      incomingStripTransfers.clear();
+      sharedStripStatus.style.display = 'none';
+      swatchGroup.style.display = '';
       placedStickers = [];
       activeSticker = null;
       recordedChunks = [];
@@ -1219,6 +1234,10 @@
       hideExportButtons();
       capturedImages.length = 0;
       burstFrames.length = 0;
+      sharedStripImage = null;
+      receivedSharedStrip = false;
+      sharedStripStatus.style.display = 'none';
+      swatchGroup.style.display = '';
       placedStickers.length = 0;
       recordedChunks = [];
       livePhotoBlob = null;
@@ -1249,6 +1268,12 @@
       startBtn.disabled = false;
       sessionActive = false;
       showExportButtons();
+      shareStripWithRoom();
+      if (queuedSharedStripImage) {
+        const receivedImage = queuedSharedStripImage;
+        queuedSharedStripImage = null;
+        displaySharedStrip(receivedImage);
+      }
     }
 
     function setupShotProgress(shots) {
@@ -1352,6 +1377,7 @@
 
     // Dynamic Canvas Renderer based on Selected Layout & Design Options
     function renderBlankStrip() {
+      if (drawSharedStrip()) return;
       setupCanvasDimensions();
       const tpl = TEMPLATES[currentTemplate];
       tpl.drawBackground(ctx, canvas.width, canvas.height);
@@ -1363,6 +1389,7 @@
     }
 
     function renderStrip() {
+      if (drawSharedStrip()) return;
       setupCanvasDimensions();
       const tpl = TEMPLATES[currentTemplate];
       tpl.drawBackground(ctx, canvas.width, canvas.height);
@@ -1371,6 +1398,16 @@
       tpl.drawDecor(ctx, canvas.width, canvas.height);
       drawFooter(tpl);
       drawStickers();
+    }
+
+    function drawSharedStrip() {
+      if (!sharedStripImage) return false;
+      canvas.width = sharedStripImage.naturalWidth || sharedStripImage.width;
+      canvas.height = sharedStripImage.naturalHeight || sharedStripImage.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(sharedStripImage, 0, 0, canvas.width, canvas.height);
+      drawStickers();
+      return true;
     }
 
     function setupCanvasDimensions() {
@@ -1592,12 +1629,13 @@
     // Export Actions
     function showExportButtons() {
       downloadBtn.style.display = 'flex';
-      gifBtn.style.display = 'flex';
+      gifBtn.style.display = receivedSharedStrip ? 'none' : 'flex';
       shareBtn.style.display = 'flex';
-      if (livePhotoBlob) liveBtn.style.display = 'flex';
+      if (livePhotoBlob && !receivedSharedStrip) liveBtn.style.display = 'flex';
       printBtn.style.display = 'flex';
       customPanel.style.display = 'flex';
-      livePhotoContainer.style.display = livePhotoBlob ? 'block' : 'none';
+      livePhotoContainer.style.display = livePhotoBlob && !receivedSharedStrip ? 'block' : 'none';
+      if (receivedSharedStrip) swatchGroup.style.display = 'none';
     }
 
     function hideExportButtons() {
@@ -1684,18 +1722,120 @@
 
     function setRoomStatus(message) { document.getElementById('roomStatus').textContent = message; }
     function showRemoteVideo(stream) { remoteVideo.srcObject = stream; remoteVideo.className = 'remote-video ' + currentFilter; remoteVideo.style.display = 'block'; document.getElementById('remoteLabel').style.display = 'block'; setRoomStatus('Your person is in the booth. Say cheese!'); }
+    // The video call carries camera/audio only. A separate reliable data
+    // channel sends the finished strip to the other participant.
+    const STRIP_CHUNK_SIZE = 48000;
+    const MAX_STRIP_TRANSFER_CHARS = 12 * 1024 * 1024;
+
+    function attachRoomDataConnection(connection) {
+      roomDataConnection = connection;
+      connection.on('open', () => {
+        if (pendingStripShare) {
+          pendingStripShare = false;
+          shareStripWithRoom();
+        }
+      });
+      connection.on('data', handleRoomDataMessage);
+      connection.on('close', () => {
+        if (roomDataConnection === connection) roomDataConnection = null;
+      });
+      connection.on('error', () => setRoomStatus('The photo sharing connection was interrupted.'));
+    }
+
+    function handleRoomDataMessage(message) {
+      if (!message || typeof message !== 'object') return;
+      if (message.type === 'strip-start') {
+        if (typeof message.id !== 'string' || !Number.isInteger(message.total) || message.total < 1 || message.total > 512 || !Number.isInteger(message.totalChars) || message.totalChars < 1 || message.totalChars > MAX_STRIP_TRANSFER_CHARS || Math.ceil(message.totalChars / STRIP_CHUNK_SIZE) !== message.total || !['image/jpeg','image/png'].includes(message.mime)) return;
+        incomingStripTransfers.set(message.id, { total: message.total, totalChars: message.totalChars, mime: message.mime, chunks: new Array(message.total), received: 0 });
+        setRoomStatus('Your friend is sharing the finished photostrip…');
+        return;
+      }
+      if (message.type !== 'strip-chunk' || typeof message.id !== 'string' || !Number.isInteger(message.index) || typeof message.chunk !== 'string') return;
+      const transfer = incomingStripTransfers.get(message.id);
+      if (!transfer || message.index < 0 || message.index >= transfer.total || message.chunk.length > STRIP_CHUNK_SIZE) return;
+      if (transfer.chunks[message.index] === undefined) {
+        transfer.chunks[message.index] = message.chunk;
+        transfer.received++;
+      }
+      if (transfer.received !== transfer.total) return;
+      incomingStripTransfers.delete(message.id);
+      const image = new Image();
+      image.onload = () => {
+        if (sessionActive) {
+          queuedSharedStripImage = image;
+          setRoomStatus('Your friend finished their strip. It will appear after your photoshoot.');
+          return;
+        }
+        displaySharedStrip(image);
+      };
+      image.onerror = () => setRoomStatus('The shared photostrip could not be opened. Ask your friend to send it again.');
+      image.src = `data:${transfer.mime};base64,${transfer.chunks.join('')}`;
+    }
+
+    function displaySharedStrip(image) {
+      sharedStripImage = image;
+      receivedSharedStrip = true;
+      capturedImages.length = 0;
+      burstFrames.length = 0;
+      placedStickers = [];
+      renderStrip();
+      sharedStripStatus.textContent = 'Shared photostrip received · download or print your copy';
+      sharedStripStatus.style.display = 'block';
+      showExportButtons();
+      setRoomStatus('Your friend’s finished photostrip is here. You can save or print it.');
+    }
+
+    function shareStripWithRoom() {
+      if (selectedMode !== 'call') return;
+      if (!roomDataConnection || !roomDataConnection.open) {
+        pendingStripShare = true;
+        setRoomStatus('Photostrip ready. It will send as soon as your friend connects.');
+        return;
+      }
+      canvas.toBlob(blob => {
+        if (!blob || !roomDataConnection || !roomDataConnection.open) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const dataUrl = String(reader.result || '');
+          const comma = dataUrl.indexOf(',');
+          if (comma < 0) return;
+          const payload = dataUrl.slice(comma + 1);
+          if (payload.length > MAX_STRIP_TRANSFER_CHARS) {
+            setRoomStatus('The strip is too large to send. Download it and share the image instead.');
+            return;
+          }
+          const total = Math.ceil(payload.length / STRIP_CHUNK_SIZE);
+          const transferId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          const connection = roomDataConnection;
+          try {
+            connection.send({ type: 'strip-start', id: transferId, total, totalChars: payload.length, mime: 'image/jpeg' });
+            for (let index = 0; index < total; index++) {
+              if (roomDataConnection !== connection || !connection.open) throw new Error('connection closed');
+              connection.send({ type: 'strip-chunk', id: transferId, index, chunk: payload.slice(index * STRIP_CHUNK_SIZE, (index + 1) * STRIP_CHUNK_SIZE) });
+              if (index % 16 === 15) await new Promise(resolve => setTimeout(resolve, 0));
+            }
+            setRoomStatus('Photostrip sent to your friend. They can download or print it too.');
+          } catch (error) {
+            setRoomStatus('Photostrip sharing was interrupted. Take another strip to send it again.');
+          }
+        };
+        reader.readAsDataURL(blob);
+      }, 'image/jpeg', 0.86);
+    }
+
     function createRoom() {
       if (!video.srcObject) { setRoomStatus('Turn on your camera first.'); return; }
       if (typeof Peer === 'undefined') { setRoomStatus('Call service did not load. Check your connection.'); return; }
       const id = 'analog-' + Math.random().toString(36).slice(2, 9); roomId = id; setRoomStatus('Opening your private room…'); callPeer = new Peer(id);
       callPeer.on('open', () => { const invite = new URL(location.href); invite.searchParams.set('room', id); invite.searchParams.set('autojoin', '1'); invite.searchParams.set('layout', selectedLayout); invite.searchParams.set('template', currentTemplate); invite.searchParams.set('filter', currentFilter); invite.searchParams.set('timer', String(countdownDuration)); document.getElementById('roomHint').textContent = invite.href; document.getElementById('copyRoomButton').style.display = 'inline-block'; setRoomStatus('Room ready. Copy the invite and send it to your friend.'); navigator.clipboard?.writeText(invite.href).then(() => setRoomStatus('Invite link copied. Send it to your friend!')).catch(() => {}); });
       callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); incoming.on('close', () => setRoomStatus('Your friend left the booth.')); });
+      callPeer.on('connection', attachRoomDataConnection);
       callPeer.on('error', error => setRoomStatus(error.type === 'unavailable-id' ? 'Could not open the room. Create another invite.' : 'Call connection error. Try again.'));
     }
     async function copyInvite() { try { await navigator.clipboard.writeText(document.getElementById('roomHint').textContent); setRoomStatus('Invite copied — paste it into your chat.'); } catch (_) { setRoomStatus('Select and copy the invite link above.'); } }
     function joinRoomFromInvite(id) {
       if (!id || typeof Peer === 'undefined' || !video.srcObject) return;
-      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } });
+      callPeer = new Peer(); callPeer.on('open', () => { activeCall = callPeer.call(id, video.srcObject); if (activeCall) { activeCall.on('stream', showRemoteVideo); activeCall.on('error', () => setRoomStatus('Could not join. Ask your friend to make a new invite.')); } attachRoomDataConnection(callPeer.connect(id, { reliable: true })); });
       callPeer.on('call', incoming => { incoming.answer(video.srcObject); activeCall = incoming; incoming.on('stream', showRemoteVideo); }); setRoomStatus('Joining your friend’s booth…');
     }
 
@@ -1733,3 +1873,4 @@
   </script>
 </body>
 </html>
+
