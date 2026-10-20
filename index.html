@@ -805,6 +805,9 @@
     let pendingStripShare = false;
     let sharedStripImage = null;
     let queuedSharedStripImage = null;
+    let sharedGifBlob = null;
+    let queuedSharedGifBlob = null;
+    let pendingGifShare = false;
     let receivedSharedStrip = false;
     const incomingStripTransfers = new Map();
     let currentFilter = 'filter-sepia';
@@ -1088,6 +1091,9 @@
       burstFrames.length = 0;
       sharedStripImage = null;
       queuedSharedStripImage = null;
+      sharedGifBlob = null;
+      queuedSharedGifBlob = null;
+      pendingGifShare = false;
       receivedSharedStrip = false;
       pendingStripShare = false;
       incomingStripTransfers.clear();
@@ -1238,6 +1244,7 @@
       capturedImages.length = 0;
       burstFrames.length = 0;
       sharedStripImage = null;
+      sharedGifBlob = null;
       receivedSharedStrip = false;
       sharedStripStatus.style.display = 'none';
       swatchGroup.style.display = '';
@@ -1272,10 +1279,16 @@
       sessionActive = false;
       showExportButtons();
       shareStripWithRoom();
+      shareGifWithRoom();
       if (queuedSharedStripImage) {
         const receivedImage = queuedSharedStripImage;
         queuedSharedStripImage = null;
         displaySharedStrip(receivedImage);
+      }
+      if (queuedSharedGifBlob) {
+        const receivedGif = queuedSharedGifBlob;
+        queuedSharedGifBlob = null;
+        displaySharedGif(receivedGif);
       }
     }
 
@@ -1632,7 +1645,7 @@
     // Export Actions
     function showExportButtons() {
       downloadBtn.style.display = 'flex';
-      gifBtn.style.display = receivedSharedStrip ? 'none' : 'flex';
+      gifBtn.style.display = receivedSharedStrip && !sharedGifBlob ? 'none' : 'flex';
       shareBtn.style.display = 'flex';
       if (livePhotoBlob && !receivedSharedStrip) liveBtn.style.display = 'flex';
       printBtn.style.display = 'flex';
@@ -1674,8 +1687,8 @@
     }
 
     // Encode a real compact GIF with a 3-3-2 color palette for a quick download.
-    function downloadGif() {
-      if (!burstFrames.length || typeof GifWriter === 'undefined') { alert('The GIF encoder could not load. Check your connection and try again.'); return; }
+    function createGifBlob() {
+      if (!burstFrames.length || typeof GifWriter === 'undefined') return null;
       const width = 320, height = 240, palette = [];
       for (let i = 0; i < 256; i++) {
         const r = (i >> 5) & 7, g = (i >> 2) & 7, b = i & 3;
@@ -1692,6 +1705,12 @@
         writer.addFrame(0, 0, width, height, indexed, {delay:140, disposal:2});
       }
       const length = writer.end(), blob = new Blob([buffer.subarray(0, length)], {type:'image/gif'});
+      return blob;
+    }
+
+    function downloadGif() {
+      const blob = sharedGifBlob || createGifBlob();
+      if (!blob) { alert('The GIF encoder could not load. Check your connection and try again.'); return; }
       const url = URL.createObjectURL(blob), link = document.createElement('a');
       link.download = `photobooth-animation-${Date.now()}.gif`; link.href = url; link.click();
       setTimeout(() => URL.revokeObjectURL(url), 2000);
@@ -1737,6 +1756,10 @@
           pendingStripShare = false;
           shareStripWithRoom();
         }
+        if (pendingGifShare) {
+          pendingGifShare = false;
+          shareGifWithRoom();
+        }
       });
       connection.on('data', handleRoomDataMessage);
       connection.on('close', () => {
@@ -1747,21 +1770,32 @@
 
     function handleRoomDataMessage(message) {
       if (!message || typeof message !== 'object') return;
-      if (message.type === 'strip-start') {
-        if (typeof message.id !== 'string' || !Number.isInteger(message.total) || message.total < 1 || message.total > 512 || !Number.isInteger(message.totalChars) || message.totalChars < 1 || message.totalChars > MAX_STRIP_TRANSFER_CHARS || Math.ceil(message.totalChars / STRIP_CHUNK_SIZE) !== message.total || !['image/jpeg','image/png'].includes(message.mime)) return;
-        incomingStripTransfers.set(message.id, { total: message.total, totalChars: message.totalChars, mime: message.mime, chunks: new Array(message.total), received: 0 });
-        setRoomStatus('Your friend is sharing the finished photostrip…');
+      const isGifStart = message.type === 'gif-start';
+      if (message.type === 'strip-start' || isGifStart) {
+        const validMime = isGifStart ? message.mime === 'image/gif' : ['image/jpeg','image/png'].includes(message.mime);
+        if (typeof message.id !== 'string' || !Number.isInteger(message.total) || message.total < 1 || message.total > 512 || !Number.isInteger(message.totalChars) || message.totalChars < 1 || message.totalChars > MAX_STRIP_TRANSFER_CHARS || Math.ceil(message.totalChars / STRIP_CHUNK_SIZE) !== message.total || !validMime) return;
+        incomingStripTransfers.set(message.id, { kind: isGifStart ? 'gif' : 'strip', total: message.total, totalChars: message.totalChars, mime: message.mime, chunks: new Array(message.total), received: 0 });
+        if (!isGifStart) setRoomStatus('Your friend is sharing the finished photostrip…');
         return;
       }
-      if (message.type !== 'strip-chunk' || typeof message.id !== 'string' || !Number.isInteger(message.index) || typeof message.chunk !== 'string') return;
+      const isGifChunk = message.type === 'gif-chunk';
+      if ((!isGifChunk && message.type !== 'strip-chunk') || typeof message.id !== 'string' || !Number.isInteger(message.index) || typeof message.chunk !== 'string') return;
       const transfer = incomingStripTransfers.get(message.id);
-      if (!transfer || message.index < 0 || message.index >= transfer.total || message.chunk.length > STRIP_CHUNK_SIZE) return;
+      if (!transfer || transfer.kind !== (isGifChunk ? 'gif' : 'strip') || message.index < 0 || message.index >= transfer.total || message.chunk.length > STRIP_CHUNK_SIZE) return;
       if (transfer.chunks[message.index] === undefined) {
         transfer.chunks[message.index] = message.chunk;
         transfer.received++;
       }
       if (transfer.received !== transfer.total) return;
       incomingStripTransfers.delete(message.id);
+      if (transfer.kind === 'gif') {
+        const dataUrl = `data:${transfer.mime};base64,${transfer.chunks.join('')}`;
+        fetch(dataUrl).then(response => response.blob()).then(blob => {
+          if (sessionActive) queuedSharedGifBlob = blob;
+          else displaySharedGif(blob);
+        }).catch(() => setRoomStatus('The shared GIF could not be opened.'));
+        return;
+      }
       const image = new Image();
       image.onload = () => {
         if (sessionActive) {
@@ -1788,6 +1822,44 @@
       setRoomStatus('Your friend’s finished photostrip is here. You can save or print it.');
     }
 
+    function displaySharedGif(blob) {
+      sharedGifBlob = blob;
+      if (receivedSharedStrip) {
+        gifBtn.style.display = 'flex';
+        setRoomStatus('The animated GIF is ready to download too.');
+      }
+    }
+
+    function sendRoomFile(blob, kind) {
+      if (!roomDataConnection || !roomDataConnection.open) return;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const dataUrl = String(reader.result || '');
+        const comma = dataUrl.indexOf(',');
+        if (comma < 0) return;
+        const payload = dataUrl.slice(comma + 1);
+        if (payload.length > MAX_STRIP_TRANSFER_CHARS) {
+          if (kind === 'strip') setRoomStatus('The strip is too large to send. Download it and share the image instead.');
+          return;
+        }
+        const total = Math.ceil(payload.length / STRIP_CHUNK_SIZE);
+        const transferId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const connection = roomDataConnection;
+        try {
+          connection.send({ type: kind + '-start', id: transferId, total, totalChars: payload.length, mime: blob.type });
+          for (let index = 0; index < total; index++) {
+            if (roomDataConnection !== connection || !connection.open) throw new Error('connection closed');
+            connection.send({ type: kind + '-chunk', id: transferId, index, chunk: payload.slice(index * STRIP_CHUNK_SIZE, (index + 1) * STRIP_CHUNK_SIZE) });
+            if (index % 16 === 15) await new Promise(resolve => setTimeout(resolve, 0));
+          }
+          if (kind === 'strip') setRoomStatus('Photostrip sent to your friend. They can download or print it too.');
+        } catch (error) {
+          if (kind === 'strip') setRoomStatus('Photostrip sharing was interrupted. Take another strip to send it again.');
+        }
+      };
+      reader.readAsDataURL(blob);
+    }
+
     function shareStripWithRoom() {
       if (selectedMode !== 'call' || !callPeer) return;
       if (!roomDataConnection || !roomDataConnection.open) {
@@ -1800,34 +1872,18 @@
       stripSnapshot.height = canvas.height;
       stripSnapshot.getContext('2d').drawImage(canvas, 0, 0);
       stripSnapshot.toBlob(blob => {
-        if (!blob || !roomDataConnection || !roomDataConnection.open) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const dataUrl = String(reader.result || '');
-          const comma = dataUrl.indexOf(',');
-          if (comma < 0) return;
-          const payload = dataUrl.slice(comma + 1);
-          if (payload.length > MAX_STRIP_TRANSFER_CHARS) {
-            setRoomStatus('The strip is too large to send. Download it and share the image instead.');
-            return;
-          }
-          const total = Math.ceil(payload.length / STRIP_CHUNK_SIZE);
-          const transferId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-          const connection = roomDataConnection;
-          try {
-            connection.send({ type: 'strip-start', id: transferId, total, totalChars: payload.length, mime: 'image/jpeg' });
-            for (let index = 0; index < total; index++) {
-              if (roomDataConnection !== connection || !connection.open) throw new Error('connection closed');
-              connection.send({ type: 'strip-chunk', id: transferId, index, chunk: payload.slice(index * STRIP_CHUNK_SIZE, (index + 1) * STRIP_CHUNK_SIZE) });
-              if (index % 16 === 15) await new Promise(resolve => setTimeout(resolve, 0));
-            }
-            setRoomStatus('Photostrip sent to your friend. They can download or print it too.');
-          } catch (error) {
-            setRoomStatus('Photostrip sharing was interrupted. Take another strip to send it again.');
-          }
-        };
-        reader.readAsDataURL(blob);
+        if (blob) sendRoomFile(blob, 'strip');
       }, 'image/jpeg', 0.86);
+    }
+
+    function shareGifWithRoom() {
+      if (selectedMode !== 'call' || !callPeer || !burstFrames.length) return;
+      if (!roomDataConnection || !roomDataConnection.open) {
+        pendingGifShare = true;
+        return;
+      }
+      const gif = createGifBlob();
+      if (gif) sendRoomFile(gif, 'gif');
     }
 
     function createRoom() {
